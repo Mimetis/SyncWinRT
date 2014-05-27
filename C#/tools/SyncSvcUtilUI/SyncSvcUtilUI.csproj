@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{128210C9-E7B0-4D2E-984E-B473AA401188}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SyncSvcUtilUI</RootNamespace>
+    <AssemblyName>SyncSvcUtilUI</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+    
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\Tools\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>
+    </DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\Tools\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Synchronization.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Synchronization.Data.Server, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\CodeGen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\ProvisionDeprovision.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SQL Azure Icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SQL Azure Icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SyncConfig.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CodegenWizardPages\Step1_PickConfigOrCSDLModelPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CodegenWizardPages\Step1_PickConfigOrCSDLModelPage.Designer.cs">
+      <DependentUpon>Step1_PickConfigOrCSDLModelPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CodegenWizardPages\Step2_SelectCodeGenPrams.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CodegenWizardPages\Step2_SelectCodeGenPrams.Designer.cs">
+      <DependentUpon>Step2_SelectCodeGenPrams.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CodegenWizardPages\Step3_SummaryOfCodegenPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CodegenWizardPages\Step3_SummaryOfCodegenPage.Designer.cs">
+      <DependentUpon>Step3_SummaryOfCodegenPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IWizardPage.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="SyncConfigWizardPages\Step1_CreateOrOpenPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SyncConfigWizardPages\Step1_CreateOrOpenPage.Designer.cs">
+      <DependentUpon>Step1_CreateOrOpenPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SyncConfigWizardPages\Step2_AddDatabaseInfoPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SyncConfigWizardPages\Step2_AddDatabaseInfoPage.Designer.cs">
+      <DependentUpon>Step2_AddDatabaseInfoPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SyncConfigWizardPages\Step3_AddSyncScopePage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SyncConfigWizardPages\Step3_AddSyncScopePage.Designer.cs">
+      <DependentUpon>Step3_AddSyncScopePage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SyncConfigWizardPages\Step4a_ReadTableInfoFromDbPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SyncConfigWizardPages\Step4a_ReadTableInfoFromDbPage.Designer.cs">
+      <DependentUpon>Step4a_ReadTableInfoFromDbPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SyncConfigWizardPages\Step4_AddSyncTablesPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SyncConfigWizardPages\Step4_AddSyncTablesPage.Designer.cs">
+      <DependentUpon>Step4_AddSyncTablesPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SyncConfigWizardPages\Step5_SummaryAndFinishPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SyncConfigWizardPages\Step5_SummaryAndFinishPage.Designer.cs">
+      <DependentUpon>Step5_SummaryAndFinishPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SyncMasterWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SyncMasterWizard.Designer.cs">
+      <DependentUpon>SyncMasterWizard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SyncProvisionWizardPages\Setp1_GetAndOpenConfigFile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SyncProvisionWizardPages\Setp1_GetAndOpenConfigFile.Designer.cs">
+      <DependentUpon>Setp1_GetAndOpenConfigFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SyncProvisionWizardPages\Step2_SummaryOfProvDeProvPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SyncProvisionWizardPages\Step2_SummaryOfProvDeProvPage.Designer.cs">
+      <DependentUpon>Step2_SummaryOfProvDeProvPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WizardHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CodegenWizardPages\Step1_PickConfigOrCSDLModelPage.resx">
+      <DependentUpon>Step1_PickConfigOrCSDLModelPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CodegenWizardPages\Step2_SelectCodeGenPrams.resx">
+      <DependentUpon>Step2_SelectCodeGenPrams.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CodegenWizardPages\Step3_SummaryOfCodegenPage.resx">
+      <DependentUpon>Step3_SummaryOfCodegenPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SyncConfigWizardPages\Step1_CreateOrOpenPage.resx">
+      <DependentUpon>Step1_CreateOrOpenPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SyncConfigWizardPages\Step2_AddDatabaseInfoPage.resx">
+      <DependentUpon>Step2_AddDatabaseInfoPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SyncConfigWizardPages\Step3_AddSyncScopePage.resx">
+      <DependentUpon>Step3_AddSyncScopePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SyncConfigWizardPages\Step4a_ReadTableInfoFromDbPage.resx">
+      <DependentUpon>Step4a_ReadTableInfoFromDbPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SyncConfigWizardPages\Step4_AddSyncTablesPage.resx">
+      <DependentUpon>Step4_AddSyncTablesPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SyncConfigWizardPages\Step5_SummaryAndFinishPage.resx">
+      <DependentUpon>Step5_SummaryAndFinishPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SyncMasterWizard.resx">
+      <DependentUpon>SyncMasterWizard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SyncProvisionWizardPages\Setp1_GetAndOpenConfigFile.resx">
+      <DependentUpon>Setp1_GetAndOpenConfigFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SyncProvisionWizardPages\Step2_SummaryOfProvDeProvPage.resx">
+      <DependentUpon>Step2_SummaryOfProvDeProvPage.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SyncSvcUtil\SyncSvcUtil.csproj">
+      <Project>{d592cc46-92ea-44a9-a5be-97e9ca319b47}</Project>
+      <Name>SyncSvcUtil</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  -->
+  <Target Name="AfterBuild">
+    <PropertyGroup>
+      <!-- Working directory for each platform -->
+      <NugetOutputDir>$(SolutionDir)Nuget\SyncClient.SQLite\</NugetOutputDir>
+      <!-- Nuget platform -->
+      <NugetFx>netcore45</NugetFx>
+      <!-- Nuget local repository -->
+      <NugetRepositoryDir>
+        C:\Projects\PERSONAL\Nuget\
+      </NugetRepositoryDir>
+      <!-- Local Nuget.exe command line -->
+      <NugetCommandLine>C:\Program Files (x86)\NuGet\NuGet.exe</NugetCommandLine>
+    </PropertyGroup>
+    <ItemGroup>
+      <!-- Includes all mandatories files  -->
+      <NugetInputFiles Include="$(OutDir)\*.exe" />
+      <NugetInputFiles Include="$(OutDir)\*.dll" />
+      <NugetInputFiles Include="$(OutDir)\*.config" />
+    </ItemGroup>
+    <!-- Copy x86 Files -->
+    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'x86') )"
+          SourceFiles="@(NugetInputFiles)" 
+          ContinueOnError="true" 
+          DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)tools\%(Filename)%(Extension)')" />
+
+  </Target>
+  
+</Project>

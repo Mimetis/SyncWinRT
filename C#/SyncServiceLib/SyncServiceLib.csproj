@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B1152373-5435-4344-A749-A083734B69DC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Microsoft.Synchronization.Services</RootNamespace>
+    <AssemblyName>Microsoft.Synchronization.Services</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+   
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\server\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SERVER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\server\Release\</OutputPath>
+    <DefineConstants>TRACE;SERVER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Synchronization, Version=2.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Microsoft.Synchronization.Data, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Synchronization.Data.Server, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Synchronization.Data.SqlServer, Version=3.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Net">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel.Web, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Batching\Batch.cs" />
+    <Compile Include="Batching\BatchHeader.cs" />
+    <Compile Include="Batching\FileBasedBatchHandler.cs" />
+    <Compile Include="Batching\IBatchHandler.cs" />
+    <Compile Include="Common\Conflict.cs" />
+    <Compile Include="Common\IOfflineEntity.cs" />
+    <Compile Include="Common\OfflineEntityMetadata.cs" />
+    <Compile Include="Common\SyncConflict.cs" />
+    <Compile Include="Common\SyncConflictResolution.cs" />
+    <Compile Include="Common\SyncError.cs" />
+    <Compile Include="Configuration\MetadataCache.cs" />
+    <Compile Include="Configuration\MetadataCacheItem.cs" />
+    <Compile Include="Configuration\MetadataCacheKey.cs" />
+    <Compile Include="Configuration\SyncServiceConfiguration.cs" />
+    <Compile Include="diagxslt.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>diagxslt.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Error\Error.cs" />
+    <Compile Include="Error\ErrorHandler.cs" />
+    <Compile Include="Error\HttpStatusCode.cs" />
+    <Compile Include="Error\Strings.cs" />
+    <Compile Include="Error\SyncServiceException.cs" />
+    <Compile Include="Formatters\AtomEntryInfoWrapper.cs" />
+    <Compile Include="Formatters\AtomHelper.cs" />
+    <Compile Include="Formatters\EntryInfoWrapper.cs" />
+    <Compile Include="Formatters\FormatterConstants.cs" />
+    <Compile Include="Formatters\FormatterUtilities.cs" />
+    <Compile Include="Formatters\JsonElementTypes.cs" />
+    <Compile Include="Formatters\JsonEntryInfoWrapper.cs" />
+    <Compile Include="Formatters\JsonHelper.cs" />
+    <Compile Include="Formatters\ODataAtomReader.cs" />
+    <Compile Include="Formatters\ODataAtomWriter.cs" />
+    <Compile Include="Formatters\ODataJsonReader.cs" />
+    <Compile Include="Formatters\ODataJsonWriter.cs" />
+    <Compile Include="Formatters\ReaderItemType.cs" />
+    <Compile Include="Formatters\ReflectionUtility.cs" />
+    <Compile Include="Formatters\SyncReader.cs" />
+    <Compile Include="Formatters\SyncWriter.cs" />
+    <Compile Include="IRequestHandler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="HttpContextServiceHost.cs" />
+    <Compile Include="Configuration\ISyncServiceConfiguration.cs" />
+    <Compile Include="Request.cs" />
+    <Compile Include="RequestParser.cs" />
+    <Compile Include="RequestProcessor\DelegateBodyWriter.cs" />
+    <Compile Include="RequestProcessor\DownloadChangesRequestProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RequestProcessor\IRequestProcessor.cs" />
+    <Compile Include="RequestProcessor\RequestProcessorFactory.cs" />
+    <Compile Include="RequestProcessor\ScopeSchemaRequestProcessor.cs" />
+    <Compile Include="RequestProcessor\SyncRequestProcessorBase.cs" />
+    <Compile Include="RequestProcessor\SyncScopesRequestProcessor.cs" />
+    <Compile Include="RequestProcessor\UploadChangesRequestProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlProvider\ApplyChangesResponse.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlProvider\DataSetToEntitiesConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlProvider\GetChangesResponse.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlProvider\IAsymmetricProviderService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlProvider\provider\BatchRangeSetUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlProvider\provider\RowSorter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlProvider\provider\SqlEditionHelper.cs" />
+    <Compile Include="SqlProvider\provider\SyncUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlProvider\SqlSyncProviderFilterParameterInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SqlProvider\SqlSyncProviderService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SyncBlob.cs" />
+    <Compile Include="SyncConflictInterceptorAttribute.cs" />
+    <Compile Include="SyncDownloadResponseOperationContext.cs" />
+    <Compile Include="SyncEntityPropertyMappingAttribute.cs" />
+    <Compile Include="SyncEntityPropertyIsNullableAttribute.cs" />
+    <Compile Include="SyncEntityTypeAttribute.cs" />
+    <Compile Include="ServiceError.cs" />
+    <Compile Include="SyncInterceptorAttribute.cs" />
+    <Compile Include="SyncInterceptorsInfoWrapper.cs" />
+    <Compile Include="SyncOperationContext.cs" />
+    <Compile Include="SyncRequestInterceptorAttribute.cs" />
+    <Compile Include="SyncResponseInterceptorAttribute.cs" />
+    <Compile Include="SyncService.cs" />
+    <Compile Include="SyncServiceHost.cs" />
+    <Compile Include="SyncServiceHostFactory.cs" />
+    <Compile Include="SyncServiceTracer.cs" />
+    <Compile Include="SyncConflictContext.cs" />
+    <Compile Include="SyncUploadRequestOperationContext.cs" />
+    <Compile Include="SyncUploadResponseOperationContext.cs" />
+    <Compile Include="Diag\DiagHelper.cs" />
+    <Compile Include="Utility\ODataIdParser.cs" />
+    <Compile Include="Utility\SyncServiceConstants.cs" />
+    <Compile Include="Utility\WebUtil.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="diagxslt.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>diagxslt.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Diag\diag.xslt" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterBuild">
+    <!--<Message Text="TargetFileName : $(TargetFileName) " Importance="high" />
+    <Message Text="ProjectPriFileName : $(ProjectPriFileName) " Importance="high" />
+    <Message Text="MSBuildAllProjects  : $(MSBuildAllProjects) " Importance="high" />
+    <Message Text="SourceFiles : @(SourceFiles) " Importance="high" />
+    <Message Text="DestinationFiles : @(DestinationFiles) " Importance="high" />
+    <Message Text="ExpandPayloadDirectories : @(ExpandPayloadDirectories) " Importance="high" />-->
+    <PropertyGroup>
+      <!-- Working directory for each platform -->
+      <NugetOutputDir>$(SolutionDir)Nuget\SyncClient.SQLite\</NugetOutputDir>
+      <!-- Nuget platform -->
+      <NugetFx>net35</NugetFx>
+      <!-- Nuget local repository -->
+      <NugetRepositoryDir>
+        C:\Projects\PERSONAL\Nuget\
+      </NugetRepositoryDir>
+      <!-- Local Nuget.exe command line -->
+      <NugetCommandLine>C:\Program Files (x86)\NuGet\NuGet.exe</NugetCommandLine>
+    </PropertyGroup>
+    <ItemGroup>
+      <!-- Result package -->
+      <NugetPkgFileOutput Include="$(NugetOutputDir)*.nupkg" />
+      <!-- Includes all mandatories files  -->
+      <NugetInputFiles Include="$(OutDir)\*.pri" />
+      <NugetInputFiles Include="$(OutDir)\*.dll" />
+      <NugetInputFiles Include="$(OutDir)\*.winmd" />
+    </ItemGroup>
+    <!-- Copy Files to Working directories -->
+    <Copy Condition="'$(Configuration)'=='Release'" SourceFiles="@(NugetInputFiles)" ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)lib\$(NugetFx)\%(Filename)%(Extension)')" />
+    <!-- Create the Package -->
+    <Exec Condition="'$(Configuration)'=='Release'" WorkingDirectory="$(NugetOutputDir)" ContinueOnError="true" Command="%22$(NugetCommandLine)%22 pack SyncClient.SQLite.nuspec">
+    </Exec>
+    <Copy Condition="'$(Configuration)'=='Release'" SourceFiles="@(NugetPkgFileOutput)" ContinueOnError="true" DestinationFolder="$(NugetRepositoryDir)" />
+    <!--
+   
+    
+
+    
+
+  -->
+  </Target>
+</Project>

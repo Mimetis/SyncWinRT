@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="SharedProjectFile_SccProperties">
+    <SharedProjectFile_ProjectGuid>{f2d012bb-411a-47e2-b0c3-9b9ad852cd5d}</SharedProjectFile_ProjectGuid>
+    <SharedProjectFile_SccProjectName>SAK</SharedProjectFile_SccProjectName>
+    <SharedProjectFile_SccAuxPath>SAK</SharedProjectFile_SccAuxPath>
+    <SharedProjectFile_SccLocalPath>SAK</SharedProjectFile_SccLocalPath>
+    <SharedProjectFile_SccProvider>SAK</SharedProjectFile_SccProvider>
+  </PropertyGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>936a4dec-06a7-46d3-9021-2e35ef46ec37</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SyncClient.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\CacheControllerAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\CacheControllerBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\CacheRefreshStatistics.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\CacheRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\CacheRequestResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\ChangeSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\ChangeSetResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\Enums\CacheRequestType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\Enums\SerializationFormat.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\Exceptions\AsyncWorkManagerException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\Exceptions\CacheControllerException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\HttpCacheRequestHandlerAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\OfflineSyncProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\SyncProgressEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\SyncStage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\AsyncHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Conflict.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\IOfflineEntity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\OfflineEntityMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\OfflineSchema.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\StorageExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\SyncBlob.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\SyncConflict.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\SyncConflictResolution.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\SyncError.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExceptionUtility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\AtomEntryInfoWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\AtomHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\EntryInfoWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\FormatterConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\FormatterUtilities.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\JsonElementTypes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\JsonEntryInfoWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\JsonXmlReader\Enums.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\JsonXmlReader\JsonHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\JsonXmlReader\StringHandle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\JsonXmlReader\ValueHandle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\JsonXmlReader\XmlBufferReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\JsonXmlReader\XmlConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\JsonXmlReader\XmlJsonReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\JsonXmlReader\XmlJsonWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\JsonXmlReader\XmlNode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\ODataAtomReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\ODataAtomWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\ODataJsonReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\ODataJsonWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\ReaderItemType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\ReflectionExtensionMethods.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\ReflectionUtility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\SyncReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Formatters\SyncWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SQLite\SQLiteAttributes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SQLite\SQLiteConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SQLite\SQLiteConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SQLite\SQLiteContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SQLite\SQLiteHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SQLite\SQLiteManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SQLite\SQLiteOfflineEntity.cs" />
+  </ItemGroup>
+</Project>
