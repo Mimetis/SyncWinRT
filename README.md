@@ -42,11 +42,12 @@ Setup
 To create a “synchonizable application” that will work on Windows Store apps and Windows Phone 8, you will find in the documentation tab a full tutorial (still in progress)
 
 Here the tutorial parts :
-- [Download and install Sync Framework and Sync Toolkit for WinRT](https://github.com/Mimetis/SyncWinRT/wiki/Install)
-- Generate the code for your database, your server and your client application 
-- Create a fully functional application 
-- Create a filtered application based on a template scope 
-- Handle conflicts 
+
+1. [Installation : Get the Sync Toolkit and required SDK](https://github.com/Mimetis/SyncWinRT/wiki/Install)
+2. [Generate server and client code](https://github.com/Mimetis/SyncWinRT/wiki/Generate-Server-and-Client-code)
+3. [Create a simple application](https://github.com/Mimetis/SyncWinRT/wiki/Create-a-simple-application)
+4. [Create a filtered application](https://github.com/Mimetis/SyncWinRT/wiki/Create-a-filtered-application)
+
 
 If you want more information, don’t forget to check my blog :  [Msdn Mim’s blog](http://aka.ms/seb)
 
