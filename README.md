@@ -11,6 +11,16 @@ this toolkit works for :
 
 The Windows Phone 8.1 (WinRT) is not yet implemented, I just wait for SQLite implementation fro SQLite.org (will be available soon, imo)
 
+
+Portable Class Library / SQLite 3.8.6.0
+=========
+This new realease implement some new features:
+- Upgrade to 3.8.6.0 (SQLite version)
+- Implement PCL support
+
+The current version works for Universal Application and Windows Phone Silverlight 8
+
+
 Windows Runtime 8.1 / SQLite 3.8.4.3
 =========
 
