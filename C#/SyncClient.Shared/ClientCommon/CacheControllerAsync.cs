@@ -106,7 +106,7 @@ namespace Microsoft.Synchronization.ClientServices
 
             try
             {
-                
+
                 // First create the CacheRequestHandler
                 this.cacheRequestHandler = new HttpCacheRequestHandler(this.serviceUri, this.controllerBehavior);
 
@@ -122,6 +122,10 @@ namespace Microsoft.Synchronization.ClientServices
 
                 // Do uploads first (no batch mode on Upload Request)
                 statistics = await this.EnqueueUploadRequest(statistics, cancellationToken, progress);
+
+                // If there is an error during Upload request, dont want to donwload
+                if (statistics.Error != null)
+                    throw new Exception("Error occured during Upload request.", statistics.Error);
 
                 // Check if cancellation has occured
                 if (cancellationToken.IsCancellationRequested)
@@ -145,14 +149,16 @@ namespace Microsoft.Synchronization.ClientServices
                 statistics.Cancelled = true;
                 statistics.Error = ex;
 
-                this.localProvider.EndSession();
+                if (this.beginSessionComplete)
+                    this.localProvider.EndSession();
             }
             catch (Exception ex)
             {
                 statistics.EndTime = DateTime.Now;
                 statistics.Error = ex;
 
-                this.localProvider.EndSession();
+                if (this.beginSessionComplete)
+                    this.localProvider.EndSession();
             }
             finally
             {
@@ -225,15 +231,16 @@ namespace Microsoft.Synchronization.ClientServices
 
                 // Upload changes to server
                 durationStartDate = DateTime.Now;
-                var args = await this.cacheRequestHandler.ProcessCacheRequestAsync(request, changeSet.IsLastBatch, cancellationToken);
+                var requestResult = await this.cacheRequestHandler.ProcessCacheRequestAsync(
+                    request, changeSet.IsLastBatch, cancellationToken);
 
                 // Get response from server if mb any conflicts or updated items
-                statistics = await this.ProcessCacheRequestResults(statistics, args, cancellationToken);
+                statistics = await this.ProcessCacheRequestResults(statistics, requestResult, cancellationToken);
 
                 // Reporting progress after uploading changes, and mb get back Conflicts and new Id from insterted items
                 if (progress != null)
                     progress.Report(new SyncProgressEvent(SyncStage.UploadingChanges, DateTime.Now.Subtract(durationStartDate), true,
-                                                            changeSet.Data, args.ChangeSetResponse.Conflicts, args.ChangeSetResponse.UpdatedItems));
+                                                            changeSet.Data, requestResult.ChangeSetResponse.Conflicts, requestResult.ChangeSetResponse.UpdatedItems));
 
             }
             catch (OperationCanceledException)
@@ -284,17 +291,18 @@ namespace Microsoft.Synchronization.ClientServices
 
                     // Get Changes
                     DateTime durationStartDate = DateTime.Now;
-                    var args = await this.cacheRequestHandler.ProcessCacheRequestAsync(request, null, cancellationToken);
+                    var requestResult = await this.cacheRequestHandler.ProcessCacheRequestAsync(
+                        request, null, cancellationToken);
 
-                    statistics = await this.ProcessCacheRequestResults(statistics, args, cancellationToken);
+                    statistics = await this.ProcessCacheRequestResults(statistics, requestResult, cancellationToken);
 
                     // Check if we are at the end 
-                    if (args.ChangeSet == null || args.ChangeSet.IsLastBatch)
+                    if (requestResult.ChangeSet == null || requestResult.ChangeSet.IsLastBatch)
                         isLastBatch = true;
 
                     // Reporting progress after get changes from local store
                     if (progress != null)
-                        progress.Report(new SyncProgressEvent(SyncStage.DownloadingChanges, DateTime.Now.Subtract(durationStartDate), true, (args.ChangeSet != null ? args.ChangeSet.Data : null)));
+                        progress.Report(new SyncProgressEvent(SyncStage.DownloadingChanges, DateTime.Now.Subtract(durationStartDate), true, (requestResult.ChangeSet != null ? requestResult.ChangeSet.Data : null)));
                 }
             }
             catch (OperationCanceledException)
@@ -319,7 +327,8 @@ namespace Microsoft.Synchronization.ClientServices
         /// underlying provider with the status of the upload. In case of Download it notifies the local provider of the
         /// changes that it needs to save.
         /// </summary>
-        private async Task<CacheRefreshStatistics> ProcessCacheRequestResults(CacheRefreshStatistics statistics, CacheRequestResult cacheRequestResult, CancellationToken cancellationToken)
+        private async Task<CacheRefreshStatistics> ProcessCacheRequestResults(
+            CacheRefreshStatistics statistics, CacheRequestResult cacheRequestResult, CancellationToken cancellationToken)
         {
             try
             {
@@ -329,13 +338,12 @@ namespace Microsoft.Synchronization.ClientServices
                 #region Error
                 if (cacheRequestResult.Error != null)
                 {
-                    // Check to see if it was a UploadRequest in which case we will have to call OnChangeSetUploaded
-                    // with error to reset the dirty bits.
-                    if (cacheRequestResult.ChangeSetResponse != null)
-                    {
-                        // its an response to a upload
+
+                    // We have an error but we have a ChangeSetResponse with reading the upload respose
+                    // So we can serialize results and update dirty bits 
+                    if (cacheRequestResult.ChangeSetResponse != null
+                        && cacheRequestResult.HttpStep == HttpState.End)
                         await this.localProvider.OnChangeSetUploaded(cacheRequestResult.Id, cacheRequestResult.ChangeSetResponse);
-                    }
 
                     // Finally complete Refresh with error.
                     statistics.Error = cacheRequestResult.Error;
@@ -348,8 +356,9 @@ namespace Microsoft.Synchronization.ClientServices
 
                 if (cacheRequestResult.ChangeSetResponse != null)
                 {
-                    // its an response to a upload
-                    await this.localProvider.OnChangeSetUploaded(cacheRequestResult.Id, cacheRequestResult.ChangeSetResponse);
+                    if (cacheRequestResult.ChangeSetResponse.Error == null 
+                        && cacheRequestResult.HttpStep == HttpState.End)
+                        await this.localProvider.OnChangeSetUploaded(cacheRequestResult.Id, cacheRequestResult.ChangeSetResponse);
 
                     if (cacheRequestResult.ChangeSetResponse.Error != null)
                     {
@@ -365,13 +374,9 @@ namespace Microsoft.Synchronization.ClientServices
                     foreach (var e1 in cacheRequestResult.ChangeSetResponse.ConflictsInternal)
                     {
                         if (e1 is SyncConflict)
-                        {
                             statistics.TotalSyncConflicts++;
-                        }
                         else
-                        {
                             statistics.TotalSyncErrors++;
-                        }
                     }
 
                     return statistics;
