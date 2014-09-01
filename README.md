@@ -11,6 +11,7 @@ this toolkit works for :
 * Android (thanks to Xamarin)
 
 You can install the toolkit from Nuget : https://github.com/Mimetis/SyncWinRT (See tutorials for more informations)
+And here is a full sample [Fabrikam Universal Application Sample](http://www.dotmim.com/sitefiles/Fabrikam Sample Universal.zip)
 
 Portable Class Library / SQLite 3.8.6.0
 =========
