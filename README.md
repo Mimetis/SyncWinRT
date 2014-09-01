@@ -6,17 +6,19 @@ This project is the WinRT implementation of the Sync Framework Toolkit to enable
 this toolkit works for :
 * Windows Phone 8.0 and 8.1 (Silverlight) 
 * Windows Store apps (WinRT)
+* Windows Phone 8.1 (WinRT)
 * iOS (thanks to Xamarin)
 * Android (thanks to Xamarin)
 
-The Windows Phone 8.1 (WinRT) is not yet implemented, I just wait for SQLite implementation fro SQLite.org (will be available soon, imo)
-
+You can install the toolkit from Nuget : https://github.com/Mimetis/SyncWinRT (See tutorials for more informations)
 
 Portable Class Library / SQLite 3.8.6.0
 =========
 This new realease implement some new features:
 - Upgrade to 3.8.6.0 (SQLite version)
 - Implement PCL support
+- Support for Windows Phone 8.1 WinRT
+- Create a full sample based on Universal Application
 
 The current version works for Universal Application and Windows Phone Silverlight 8
 
