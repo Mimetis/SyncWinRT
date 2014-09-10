@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncServiceLib", "C#\SyncServiceLib\SyncServiceLib.csproj", "{B1152373-5435-4344-A749-A083734B69DC}"
 EndProject
@@ -16,6 +16,10 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SyncClient.Shared", "C#\SyncClient.Shared\SyncClient.Shared.shproj", "{936A4DEC-06A7-46D3-9021-2E35EF46EC37}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncClient.WindowsPhone81", "SyncClient.WindowsPhone81\SyncClient.WindowsPhone81.csproj", "{C3DB31F5-B1DA-41A7-B4AD-1246AF281A25}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0354F169-3BDF-4367-A92C-A0E216FA19A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncServiceLibTest", "SyncServiceLibTest\SyncServiceLibTest.csproj", "{C5F88976-4700-45F4-91E0-75B64C2FB195}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -160,8 +164,27 @@ Global
 		{C3DB31F5-B1DA-41A7-B4AD-1246AF281A25}.Release|x64.ActiveCfg = Release|Any CPU
 		{C3DB31F5-B1DA-41A7-B4AD-1246AF281A25}.Release|x86.ActiveCfg = Release|x86
 		{C3DB31F5-B1DA-41A7-B4AD-1246AF281A25}.Release|x86.Build.0 = Release|x86
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Release|ARM.ActiveCfg = Release|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Release|Win32.ActiveCfg = Release|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Release|x64.ActiveCfg = Release|Any CPU
+		{C5F88976-4700-45F4-91E0-75B64C2FB195}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C5F88976-4700-45F4-91E0-75B64C2FB195} = {0354F169-3BDF-4367-A92C-A0E216FA19A4}
 	EndGlobalSection
 EndGlobal

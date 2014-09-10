@@ -38,16 +38,16 @@ using Microsoft.Synchronization.Services.SqlProvider;
 namespace Microsoft.Synchronization.Services
 {
     /// <summary>
-    /// Arguments for OnEndSyncRequest event
+    /// Arguments for EndSyncRequest event
     /// </summary>
-    public class OnEndSyncRequestEventArgs : EventArgs 
+    public class EndSyncRequestEventArgs : EventArgs 
     {
         private Message msg;
         
         /// <summary>
         /// Constructor of the event that is raised before processing a sync request.
         /// </summary>
-        public OnEndSyncRequestEventArgs(Message msg)
+        public EndSyncRequestEventArgs(Message msg)
         {
             this.msg = msg;
         }
@@ -140,7 +140,7 @@ namespace Microsoft.Synchronization.Services
                 CreateConfiguration();
 
                 // Raise event for user code
-                InvokeOnSyncRequestStart();
+                OnBeginSyncRequest();
 
                 _requestDescription = new RequestParser(_serviceHost, _syncConfiguration).ParseIncomingRequest();
 
@@ -161,7 +161,7 @@ namespace Microsoft.Synchronization.Services
                 }
 
                 // Raise event for user code
-                InvokeOnEndSyncRequest(_outgoingMessage);
+                OnEndSyncRequest(_outgoingMessage);
             }
             catch (SyncServiceException syncServiceException)
             {
@@ -368,7 +368,7 @@ namespace Microsoft.Synchronization.Services
 
             SyncServiceTracer.TraceWarning(exceptionMessage);
 
-            _outgoingMessage = _syncConfiguration.UseVerboseErrors
+            _outgoingMessage = (_syncConfiguration != null && _syncConfiguration.UseVerboseErrors)
                                    ? CreateExceptionMessage((HttpStatusCode)syncServiceException.StatusCode, exceptionMessage)
                                    : CreateExceptionMessage((HttpStatusCode)syncServiceException.StatusCode, syncServiceException.Message);
 
@@ -388,32 +388,32 @@ namespace Microsoft.Synchronization.Services
         /// <summary>
         /// Event that is raised before processing a sync request.
         /// </summary>
-        public event EventHandler OnBeginSyncRequest;
+        public event EventHandler BeginSyncRequest;
 
-        private void InvokeOnSyncRequestStart()
+        protected virtual void OnBeginSyncRequest()
         {
-            EventHandler request = OnBeginSyncRequest;
+            EventHandler request = BeginSyncRequest;
             if (request != null)
             {
-                SyncTracer.Verbose("Raising OnBeginSyncRequest event");
+                SyncTracer.Verbose("Raising BeginSyncRequest event");
                 request(this, new EventArgs());
-                SyncTracer.Verbose("Done: Raising OnBeginSyncRequest event");
+                SyncTracer.Verbose("Done: Raising BeginSyncRequest event");
             }
         }
         
         /// <summary>
         /// Event that is raised before writing the response to the caller.
         /// </summary>
-        public event EventHandler<OnEndSyncRequestEventArgs> OnEndSyncRequest;
+        public event EventHandler<EndSyncRequestEventArgs> EndSyncRequest;
 
-        private void InvokeOnEndSyncRequest(Message message)
+        protected virtual void OnEndSyncRequest(Message message)
         {
-            EventHandler<OnEndSyncRequestEventArgs> request = OnEndSyncRequest;
+            EventHandler<EndSyncRequestEventArgs> request = EndSyncRequest;
             if (request != null)
             {
-                SyncTracer.Verbose("Raising OnEndSyncRequest event");
-                request(this, new OnEndSyncRequestEventArgs(message));
-                SyncTracer.Verbose("Done: Raising OnEndSyncRequest event");
+                SyncTracer.Verbose("Raising EndSyncRequest event");
+                request(this, new EndSyncRequestEventArgs(message));
+                SyncTracer.Verbose("Done: Raising EndSyncRequest event");
             }
         }
 
