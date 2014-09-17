@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\Exceptions\AsyncWorkManagerException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\Exceptions\CacheControllerException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\HttpCacheRequestHandlerAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\HttpState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\OfflineSyncProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\SyncProgressEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ClientCommon\SyncStage.cs" />
