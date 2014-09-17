@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("SyncClient.Android.Resource", IsApplication=false)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("Microsoft.Synchronization.ClientServices.Resource", IsApplication=false)]
 
-namespace SyncClient.Android
+namespace Microsoft.Synchronization.ClientServices
 {
 	
 	

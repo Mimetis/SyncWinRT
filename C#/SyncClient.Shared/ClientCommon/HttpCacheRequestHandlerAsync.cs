@@ -12,6 +12,7 @@ using Microsoft.Synchronization.ClientServices.Common;
 using Microsoft.Synchronization.Services.Formatters;
 using System.Diagnostics;
 
+
 namespace Microsoft.Synchronization.ClientServices
 {
     /// <summary>
@@ -69,10 +70,11 @@ namespace Microsoft.Synchronization.ClientServices
                 cancellationToken.ThrowIfCancellationRequested();
 
             var wrapper = new AsyncArgsWrapper
-                              {
-                                  UserPassedState = state,
-                                  CacheRequest = request
-                              };
+            {
+                UserPassedState = state,
+                CacheRequest = request,
+                Step = HttpState.Start
+            };
 
             wrapper = await ProcessRequest(wrapper, cancellationToken);
 
@@ -86,6 +88,7 @@ namespace Microsoft.Synchronization.ClientServices
                         wrapper.UploadResponse,
                         wrapper.CacheRequest.Changes.Count,
                         wrapper.Error,
+                        wrapper.Step,
                         wrapper.UserPassedState);
             }
             else
@@ -95,6 +98,7 @@ namespace Microsoft.Synchronization.ClientServices
                         wrapper.CacheRequest.RequestId,
                         wrapper.DownloadResponse,
                         wrapper.Error,
+                        wrapper.Step,
                         wrapper.UserPassedState);
             }
             return cacheRequestResult;
@@ -164,7 +168,10 @@ namespace Microsoft.Synchronization.ClientServices
                                              : "application/json";
 
 
- 
+                // To be sure where it could be raise an error, just mark the step
+                wrapper.Step = HttpState.WriteRequest;
+
+
 #if !NETFX_CORE
                 using (Stream stream = await Task.Factory.FromAsync<Stream>(
                                     webRequest.BeginGetRequestStream,
@@ -178,7 +185,7 @@ namespace Microsoft.Synchronization.ClientServices
                     else
                         WriteDownloadRequestStream(stream, wrapper);
                 }
-       
+
                 // If error, return wrapper with error
                 if (wrapper.Error != null)
                     return wrapper;
@@ -189,7 +196,8 @@ namespace Microsoft.Synchronization.ClientServices
                 else
                     wrapper.DownloadResponse = new ChangeSet();
 
- 
+                wrapper.Step = HttpState.ReadResponse;
+
 #if !NETFX_CORE
                 webResponse = (HttpWebResponse)(await Task.Factory.FromAsync<WebResponse>(
                                                 webRequest.BeginGetResponse,
@@ -198,15 +206,14 @@ namespace Microsoft.Synchronization.ClientServices
                 webResponse = (HttpWebResponse)(await webRequest.GetResponseAsync());
 #endif
 
-
                 if (wrapper.CacheRequest.RequestType == CacheRequestType.UploadChanges)
                     await ReadUploadResponse(webResponse, wrapper);
                 else
                     await ReadDownloadResponse(webResponse, wrapper);
-       
+
                 if (webResponse != null)
                 {
-                    //webResponse.Close();
+                    wrapper.Step = HttpState.End;
                     webResponse.Dispose();
                     webResponse = null;
                 }
@@ -216,7 +223,6 @@ namespace Microsoft.Synchronization.ClientServices
                 if (we.Response == null)
                 {
                     wrapper.Error = we;
-
                 }
                 else
                 {
@@ -228,7 +234,9 @@ namespace Microsoft.Synchronization.ClientServices
                             new XmlJsonReader(stream, XmlDictionaryReaderQuotas.Max))
                         {
                             if (reader.ReadToDescendant(FormatterConstants.ErrorDescriptionElementNamePascalCasing))
+                            {
                                 wrapper.Error = new Exception(reader.ReadElementContentAsString());
+                            }
                         }
 
                     }
@@ -263,7 +271,7 @@ namespace Microsoft.Synchronization.ClientServices
                 var syncWriter = (SerializationFormat == SerializationFormat.ODataAtom)
                     ? new ODataAtomWriter(BaseUri)
                     : (SyncWriter)new ODataJsonWriter(BaseUri);
-                
+
                 syncWriter.StartFeed(wrapper.CacheRequest.IsLastBatch, wrapper.CacheRequest.KnowledgeBlob ?? new byte[0]);
 
                 foreach (IOfflineEntity entity in wrapper.CacheRequest.Changes)
@@ -293,7 +301,7 @@ namespace Microsoft.Synchronization.ClientServices
                     syncWriter.WriteFeed(new XmlJsonWriter(requestStream));
 
                 requestStream.Flush();
-                }
+            }
             catch (Exception e)
             {
                 if (ExceptionUtility.IsFatal(e))
@@ -520,7 +528,7 @@ namespace Microsoft.Synchronization.ClientServices
                                             break;
                                         case ReaderItemType.SyncBlob:
                                             wrapper.DownloadResponse.ServerBlob = syncReader.GetServerBlob();
-                                           // Debug.WriteLine(SyncBlob.DeSerialize(wrapper.DownloadResponse.ServerBlob).ToString());
+                                            // Debug.WriteLine(SyncBlob.DeSerialize(wrapper.DownloadResponse.ServerBlob).ToString());
                                             break;
                                         case ReaderItemType.HasMoreChanges:
                                             wrapper.DownloadResponse.IsLastBatch = !syncReader.GetHasMoreChangesValue();
@@ -565,8 +573,10 @@ namespace Microsoft.Synchronization.ClientServices
             public Dictionary<string, IOfflineEntity> TempIdToEntityMapping;
             public ChangeSetResponse UploadResponse;
             public object UserPassedState;
+            public HttpState Step;
         }
 
+      
         #endregion
     }
 }

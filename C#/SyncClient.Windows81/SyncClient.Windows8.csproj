@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\SQLitePCL.3.8.5.0\build\netcore451\SQLitePCL.props" Condition="Exists('..\..\packages\SQLitePCL.3.8.5.0\build\netcore451\SQLitePCL.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D5E78724-C6CA-44A2-BDE2-4A5CF94FF093}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Microsoft.Synchronization.ClientServices</RootNamespace>
+    <AssemblyName>Microsoft.Synchronization.ClientServices.Win81</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetPlatformVersion>8.1</TargetPlatformVersion>
+    <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>
+    <TargetFrameworkVersion />
+<<<<<<< HEAD:C#/WinRTClient/SyncClient.Windows8.csproj
+    <NuGetPackageImportStamp>9dce3ff9</NuGetPackageImportStamp>
+=======
+    <NuGetPackageImportStamp>fd77772a</NuGetPackageImportStamp>
+>>>>>>> upstream/master:C#/SyncClient.Windows81/SyncClient.Windows8.csproj
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Client\WinRT\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Client\WinRT\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\Client\WinRT\Debug\ARM\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <OutputPath>..\..\Client\WinRT\Release\ARM\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\Client\WinRT\Debug\x64\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>..\..\Client\WinRT\Release\x64\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\Client\WinRT\Debug\x86\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\..\Client\WinRT\Release\x86\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE; SQLITE_SUPPORT_GUID</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="Microsoft.VCLibs, Version=12.0">
+      <Name>Microsoft Visual C++ 2013 Runtime Package for Windows</Name>
+    </SDKReference>
+    <SDKReference Include="SQLite.WinRT81, version=3.8.5">
+      <Name>SQLite for Windows Runtime %28Windows 8.1%29</Name>
+    </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="SQLitePCL, Version=3.8.5.0, Culture=neutral, PublicKeyToken=bddade01e9c850c5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SQLitePCL.3.8.5.0\lib\netcore451\SQLitePCL.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
+    <VisualStudioVersion>12.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="..\SyncClient.Shared\SyncClient.Shared.projitems" Label="Shared" Condition="Exists('..\SyncClient.Shared\SyncClient.Shared.projitems')" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+    -->
+  <Target Name="AfterBuild">
+    <!--<Message Text="TargetFileName : $(TargetFileName) " Importance="high" />
+    <Message Text="ProjectPriFileName : $(ProjectPriFileName) " Importance="high" />
+    <Message Text="MSBuildAllProjects  : $(MSBuildAllProjects) " Importance="high" />
+    <Message Text="SourceFiles : @(SourceFiles) " Importance="high" />
+    <Message Text="DestinationFiles : @(DestinationFiles) " Importance="high" />
+    <Message Text="ExpandPayloadDirectories : @(ExpandPayloadDirectories) " Importance="high" />-->
+    <PropertyGroup>
+      <!-- Working directory for each platform -->
+      <NugetOutputDir>$(SolutionDir)Nuget\SyncClient.SQLite\</NugetOutputDir>
+      <!-- Nuget platform -->
+      <NugetFx>netcore45</NugetFx>
+      <!-- Nuget local repository -->
+      <NugetRepositoryDir>
+        C:\Projects\PERSONAL\Nuget\
+      </NugetRepositoryDir>
+      <!-- Local Nuget.exe command line -->
+      <NugetCommandLine>C:\Program Files (x86)\NuGet\NuGet.exe</NugetCommandLine>
+    </PropertyGroup>
+    <ItemGroup>
+      <!-- Result package -->
+      <NugetPkgFileOutput Include="$(NugetOutputDir)*.nupkg" />
+      <!-- Includes all mandatories files  -->
+      <!--<NugetInputFiles Include="$(OutDir)\Microsoft.Synchronization.ClientServices.Win8.pri" />-->
+      <NugetInputFiles Include="$(OutDir)\Microsoft.Synchronization.ClientServices.Win8.dll" />
+    </ItemGroup>
+    <!-- Copy x86 Files to lib for VS design time -->
+    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'x86') )" SourceFiles="@(NugetInputFiles)" ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)lib\$(NugetFx)\%(Filename)%(Extension)')" />
+    <!-- Copy Files to Working directories -->
+    <Copy Condition="'$(Configuration)'=='Release'" SourceFiles="@(NugetInputFiles)" ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)build\$(NugetFx)\$(Platform)\%(Filename)%(Extension)')" />
+    <!-- Create the Package -->
+    <Exec Condition="'$(Configuration)'=='Release'" WorkingDirectory="$(NugetOutputDir)" ContinueOnError="true" Command="%22$(NugetCommandLine)%22 pack SyncClient.SQLite.nuspec">
+    </Exec>
+    <Copy Condition="'$(Configuration)'=='Release'" SourceFiles="@(NugetPkgFileOutput)" ContinueOnError="true" DestinationFolder="$(NugetRepositoryDir)" />
+    <!--
+   
+ 
+  -->
+  </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\SQLitePCL.3.8.5.0\build\netcore451\SQLitePCL.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\SQLitePCL.3.8.5.0\build\netcore451\SQLitePCL.props'))" />
+    <Error Condition="!Exists('..\..\packages\SQLitePCL.3.8.5.0\build\netcore451\SQLitePCL.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\SQLitePCL.3.8.5.0\build\netcore451\SQLitePCL.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\SQLitePCL.3.8.5.0\build\netcore451\SQLitePCL.targets" Condition="Exists('..\..\packages\SQLitePCL.3.8.5.0\build\netcore451\SQLitePCL.targets')" />
+</Project>

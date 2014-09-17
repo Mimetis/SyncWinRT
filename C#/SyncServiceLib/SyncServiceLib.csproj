@@ -256,16 +256,6 @@
     </ItemGroup>
     <!-- Copy Files to Working directories -->
     <Copy Condition="'$(Configuration)'=='Release'" SourceFiles="@(NugetInputFiles)" ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)lib\$(NugetFx)\%(Filename)%(Extension)')" />
-    <!-- Create the Package -->
-    <Exec Condition="'$(Configuration)'=='Release'" WorkingDirectory="$(NugetOutputDir)" ContinueOnError="true" Command="%22$(NugetCommandLine)%22 pack SyncClient.SQLite.nuspec">
-    </Exec>
-    <Copy Condition="'$(Configuration)'=='Release'" SourceFiles="@(NugetPkgFileOutput)" ContinueOnError="true" DestinationFolder="$(NugetRepositoryDir)" />
-    <!--
-   
-    
 
-    
-
-  -->
   </Target>
 </Project>

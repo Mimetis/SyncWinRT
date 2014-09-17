@@ -1247,7 +1247,7 @@ namespace Microsoft.Synchronization.ClientServices
         private static char ParseChar(string value, NumberStyles style)
         {
             int num = ParseInt(value, style);
-            return Convert.ToChar(num);
+            return Convert.ToChar(num, CultureInfo.InvariantCulture);
         }
 
         /// <summary>

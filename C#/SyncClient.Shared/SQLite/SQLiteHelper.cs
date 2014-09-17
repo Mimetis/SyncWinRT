@@ -13,6 +13,7 @@ using Windows.Storage;
 #endif
 using SQLitePCL;
 using System.IO;
+using System.Globalization;
 
 
 
@@ -684,35 +685,35 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             if (clrType == typeof(String))
                 return result as string;
             if (clrType == typeof(Int32))
-                return Convert.ToInt32(result);
+                return Convert.ToInt32(result, CultureInfo.InvariantCulture);
             if (clrType == typeof(Boolean))
                 return (Int64)result == 1;
             if (clrType == typeof(Double))
-                return Convert.ToDouble(result);
+                return Convert.ToDouble(result, CultureInfo.InvariantCulture);
             if (clrType == typeof(Single))
-                return Convert.ToSingle(result);
+                return Convert.ToSingle(result, CultureInfo.InvariantCulture);
             if (clrType == typeof(DateTime))
-                return DateTime.Parse((string)result);
+                return DateTime.Parse((string)result, CultureInfo.InvariantCulture);
             if (clrType == typeof(DateTimeOffset))
-                return DateTime.Parse((string)result);
+                return DateTime.Parse((string)result, CultureInfo.InvariantCulture);
             if (clrType == typeof(TimeSpan))
                 return TimeSpan.FromTicks((Int64)result);
             if (clrType.GetTypeInfo().IsEnum)
-                return Convert.ToInt32(result);
+                return Convert.ToInt32(result, CultureInfo.InvariantCulture);
             if (clrType == typeof(Int64))
                 return (Int64)result;
             if (clrType == typeof(UInt32))
-                return Convert.ToUInt32(result);
+                return Convert.ToUInt32(result, CultureInfo.InvariantCulture);
             if (clrType == typeof(Decimal))
-                return Convert.ToDecimal(result);
+                return Convert.ToDecimal(result, CultureInfo.InvariantCulture);
             if (clrType == typeof(Byte))
-                return Convert.ToByte(result);
+                return Convert.ToByte(result, CultureInfo.InvariantCulture);
             if (clrType == typeof(UInt16))
-                return Convert.ToUInt16(result);
+                return Convert.ToUInt16(result, CultureInfo.InvariantCulture);
             if (clrType == typeof(Int16))
-                return Convert.ToInt16(result);
+                return Convert.ToInt16(result, CultureInfo.InvariantCulture);
             if (clrType == typeof(sbyte))
-                return Convert.ToSByte(result);
+                return Convert.ToSByte(result, CultureInfo.InvariantCulture);
             if (clrType == typeof(byte[]))
                 return (byte[])result;
             if (clrType == typeof(Guid))
@@ -738,7 +739,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             }
             else if (value is Byte || value is UInt16 || value is SByte || value is Int16)
             {
-                stmt.Bind(index, Convert.ToInt32(value));
+                stmt.Bind(index, Convert.ToInt32(value, CultureInfo.InvariantCulture));
             }
             else if (value is Boolean)
             {
@@ -746,11 +747,11 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             }
             else if (value is UInt32 || value is Int64)
             {
-                stmt.Bind(index, Convert.ToInt64(value));
+                stmt.Bind(index, Convert.ToInt64(value, CultureInfo.InvariantCulture));
             }
             else if (value is Single || value is Double || value is Decimal)
             {
-                stmt.Bind(index, Convert.ToDouble(value));
+                stmt.Bind(index, Convert.ToDouble(value, CultureInfo.InvariantCulture));
             }
             else if (value is DateTimeOffset)
             {
@@ -772,7 +773,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             else if (value.GetType().GetTypeInfo().IsEnum)
             {
 #endif
-                stmt.Bind(index, Convert.ToInt32(value));
+                stmt.Bind(index, Convert.ToInt32(value, CultureInfo.InvariantCulture));
             }
             else if (value is byte[])
             {

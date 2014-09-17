@@ -9,12 +9,12 @@
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SyncClient.Android</RootNamespace>
-    <AssemblyName>SyncClient.Android</AssemblyName>
+    <RootNamespace>Microsoft.Synchronization.ClientServices</RootNamespace>
+    <AssemblyName>Microsoft.Synchronization.ClientServices.Android</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-     <AndroidUseLatestPlatformSdk />
+    <AndroidUseLatestPlatformSdk />
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -37,11 +37,13 @@
   <ItemGroup>
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />
-    <Reference Include="SQLitePCL">
-      <HintPath>..\..\packages\SQLitePCL.3.8.4.3\lib\MonoAndroid\SQLitePCL.dll</HintPath>
+    <Reference Include="SQLitePCL, Version=3.8.5.0, Culture=neutral, PublicKeyToken=bddade01e9c850c5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SQLitePCL.3.8.5.1\lib\MonoAndroid\SQLitePCL.dll</HintPath>
     </Reference>
-    <Reference Include="SQLitePCL.Ext">
-      <HintPath>..\..\packages\SQLitePCL.3.8.4.3\lib\MonoAndroid\SQLitePCL.Ext.dll</HintPath>
+    <Reference Include="SQLitePCL.Ext, Version=3.8.5.0, Culture=neutral, PublicKeyToken=bddade01e9c850c5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SQLitePCL.3.8.5.1\lib\MonoAndroid\SQLitePCL.Ext.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -65,11 +67,37 @@
   <Import Project="..\SyncClient.Shared\SyncClient.Shared.projitems" Label="Shared" Condition="Exists('..\SyncClient.Shared\SyncClient.Shared.projitems')" />
   <Import Project="..\SyncClient.Shared\SyncClient.Shared.projitems" Label="Shared" Condition="Exists('..\SyncClient.Shared\SyncClient.Shared.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
   <Target Name="AfterBuild">
+    <!--<Message Text="TargetFileName : $(TargetFileName) " Importance="high" />
+    <Message Text="ProjectPriFileName : $(ProjectPriFileName) " Importance="high" />
+    <Message Text="MSBuildAllProjects  : $(MSBuildAllProjects) " Importance="high" />
+    <Message Text="SourceFiles : @(SourceFiles) " Importance="high" />
+    <Message Text="DestinationFiles : @(DestinationFiles) " Importance="high" />
+    <Message Text="ExpandPayloadDirectories : @(ExpandPayloadDirectories) " Importance="high" />-->
+    <PropertyGroup>
+      <!-- Working directory for each platform -->
+      <NugetOutputDir>$(SolutionDir)Nuget\SyncClient.SQLite\</NugetOutputDir>
+      <!-- Nuget platform -->
+      <NugetFx>MonoAndroid</NugetFx>
+      <!-- Nuget local repository -->
+      <NugetRepositoryDir>
+        C:\Projects\PERSONAL\Nuget\
+      </NugetRepositoryDir>
+      <!-- Local Nuget.exe command line -->
+      <NugetCommandLine>C:\Program Files (x86)\NuGet\NuGet.exe</NugetCommandLine>
+    </PropertyGroup>
+    <ItemGroup>
+      <!-- Result package -->
+      <NugetPkgFileOutput Include="$(NugetOutputDir)*.nupkg">
+      </NugetPkgFileOutput>
+      <!-- Includes all mandatories files  -->
+      <NugetInputFiles Include="$(OutDir)\Microsoft.Synchronization.ClientServices.Android.dll" />
+    </ItemGroup>
+    <!-- Copy x86 Files to lib for VS design time -->
+    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'AnyCPU') )" SourceFiles="@(NugetInputFiles)" 
+          ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)lib\$(NugetFx)\%(Filename)%(Extension)')" />
+    <!-- Copy Files to Working directories -->
+    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'AnyCPU') )" SourceFiles="@(NugetInputFiles)"
+          ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)build\$(NugetFx)\%(Filename)%(Extension)')" />
   </Target>
-  -->
 </Project>

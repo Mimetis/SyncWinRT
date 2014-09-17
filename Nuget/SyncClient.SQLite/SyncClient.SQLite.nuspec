@@ -2,37 +2,37 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
   <metadata>
     <id>SyncClient.SQLite</id>
-    <version>3.8.4.3</version>
+    <version>3.8.6.0</version>
     <title>SyncClient SQLite Toolkit</title>
     <authors>Sébastien Pertus</authors>
     <owners>Sébastien Pertus</owners>
-    <projectUrl>http://syncwinrt.codeplex.com</projectUrl>
+    <projectUrl>https://github.com/Mimetis/SyncWinRT</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-      This package is the WinRT implementation of the Sync Framework Toolkit to enabled synchronization with WinRT 8.1 or Windows Phone 8 and SQLite.
-      Installing package on Client WinRT will install Microsoft.Synchronization.ClientServices.Win8.dll.
-      Installing package on Client WP8 will install Microsoft.Synchronization.ClientServices.WP8.dll
+      This package is the WinRT implementation of the Sync Framework Toolkit to enabled synchronization with WinRT 8.1 or Windows Phone 8.0 / Windows Phone 8.1 and SQLite.
+      Installing package on Client WinRT (Windows or Windows Phone) will install Microsoft.Synchronization.ClientServices.WinRT.dll.
+      Installing package on Client WP8 (Windows Phone 8.0 or Windows Phone 8.1 Silverlight) will install Microsoft.Synchronization.ClientServices.WP8.dll
       Installing package on Server WebSite (Fx 35, 40, 45) will install Microsoft.Synchronization.Services.dll
     </description>
     <summary>Sync Toolkit for Windows Phone with SQLite.</summary>
     <tags>SyncFramework WinRT SQLite</tags>
 	<dependencies>
-		<group targetFramework="WindowsPhone8.0">
-			<dependency id="SQLitePCL" version="3.8.4.2" />
+		<group targetFramework="windowsphone8">
+			<dependency id="SQLitePCL" version="3.8.5.1" />
 		</group>
-		<group targetFramework=".NETCore4.5">
-			<dependency id="SQLitePCL" version="3.8.4.2" />
+		<group targetFramework="portable-windows8+net45">
+			<dependency id="SQLitePCL" version="3.8.5.1" />
 		</group>
 	</dependencies>
     <references>
-      <group targetFramework=".NETFramework3.5">
+      <group targetFramework="net35">
         <reference file="Microsoft.Synchronization.Services.dll" />
       </group>
-      <group targetFramework="WindowsPhone8.0">
+      <group targetFramework="windowsphone8">
         <reference file="Microsoft.Synchronization.ClientServices.WP8.dll" />
       </group>
-      <group targetFramework=".NETCore4.5">
-        <reference file="Microsoft.Synchronization.ClientServices.Win8.dll" />
+      <group targetFramework="portable-windows8+net45">
+        <reference file="Microsoft.Synchronization.ClientServices.WinRT.dll" />
       </group>
     </references>
   </metadata>

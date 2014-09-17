@@ -12,18 +12,26 @@ namespace Microsoft.Synchronization.ClientServices
     /// </summary>
     public class CacheRequestResult
     {
-        public Guid Id;
-        public ChangeSet ChangeSet;
-        public ChangeSetResponse ChangeSetResponse;
-        public Exception Error;
+        public Guid Id { get; set; }
+        public ChangeSet ChangeSet { get; set; }
+        public ChangeSetResponse ChangeSetResponse { get; set; }
+        public Exception Error { get; set; }
         public Object State { get; set; }
-        public uint BatchUploadCount;
+        
+        /// <summary>
+        /// Get the state of the Http request response
+        /// </summary>
+        public HttpState HttpStep { get; set; }
 
-        public CacheRequestResult(Guid id, ChangeSetResponse response, int uploadCount, Exception error, object state)
+        public uint BatchUploadCount { get; set; }
+
+        public CacheRequestResult(Guid id, ChangeSetResponse response, int uploadCount, 
+                                        Exception error, HttpState step, object state)
         {
             this.ChangeSetResponse = response;
             this.Error = error;
             this.State = state;
+            this.HttpStep = step;
             this.Id = id;
             this.BatchUploadCount = (uint)uploadCount;
 
@@ -36,12 +44,13 @@ namespace Microsoft.Synchronization.ClientServices
             this.ChangeSetResponse.Error = this.Error;
         }
 
-        public CacheRequestResult(Guid id, ChangeSet changeSet, Exception error, object state)
+        public CacheRequestResult(Guid id, ChangeSet changeSet, Exception error, HttpState step, object state)
         {
             this.ChangeSet = changeSet;
             this.Error = error;
             this.State = state;
             this.Id = id;
+            this.HttpStep = step;
         }
     }
 }
