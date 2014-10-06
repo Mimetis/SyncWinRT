@@ -220,13 +220,16 @@ namespace Microsoft.Synchronization.ClientServices
             }
             catch (WebException we)
             {
-                if (we.Response == null)
-                {
+               // if (we.Response == null)
+               // {
+                   // default to this, there will be cases where the we.Response is != null but the content length = 0
+                   // e.g 413 and other server errors. e.g the else branch of reader.ReadToDescendent. By defaulting to this
+                   // we always capture the error rather then returning an error of null in some cases
                     wrapper.Error = we;
-                }
-                else
-                {
+                //}
 
+                if(we.Response != null)
+                {
                     using (var stream = we.Response.GetResponseStream())
                     {
                         using (var reader = SerializationFormat == SerializationFormat.ODataAtom ?
@@ -238,9 +241,7 @@ namespace Microsoft.Synchronization.ClientServices
                                 wrapper.Error = new Exception(reader.ReadElementContentAsString());
                             }
                         }
-
                     }
-
                 }
             }
             catch (OperationCanceledException)
