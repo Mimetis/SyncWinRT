@@ -131,8 +131,15 @@ namespace Microsoft.Synchronization.ClientServices
                 if (cancellationToken.IsCancellationRequested)
                     cancellationToken.ThrowIfCancellationRequested();
 
-                // then Download (be careful, could be in batch mode)
-                statistics = await this.EnqueueDownloadRequest(statistics, cancellationToken, progress);
+                // When there are records records that are not uploading successfully
+                // a successfull download 1-N records will cause anchor to be updated.
+                // if anchor is updated then the records on the device will not be attempted for upload again
+                // on subsequent syncs. therefore check for null Error
+                if (statistics.Error == null)
+                {
+                    // then Download (be careful, could be in batch mode)
+                    statistics = await this.EnqueueDownloadRequest(statistics, cancellationToken, progress);
+                }
 
                 // Set end time
                 statistics.EndTime = DateTime.Now;
