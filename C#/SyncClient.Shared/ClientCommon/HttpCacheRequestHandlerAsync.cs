@@ -11,6 +11,9 @@ using System.Xml;
 using Microsoft.Synchronization.ClientServices.Common;
 using Microsoft.Synchronization.Services.Formatters;
 using System.Diagnostics;
+#if !( WINDOWS_PHONE )
+using System.IO.Compression;
+#endif
 
 
 namespace Microsoft.Synchronization.ClientServices
@@ -24,7 +27,9 @@ namespace Microsoft.Synchronization.ClientServices
         private readonly ICredentials credentials;
         private readonly Type[] knownTypes;
         private readonly string scopeName;
+        private readonly bool automaticDecompression;
         private readonly Dictionary<string, string> scopeParameters;
+        private readonly Dictionary<string, string> customHeaders;
         private readonly SerializationFormat serializationFormat;
 
         //       private SyncReader syncReader;
@@ -39,6 +44,8 @@ namespace Microsoft.Synchronization.ClientServices
             knownTypes = new Type[behaviors.KnownTypes.Count];
             behaviors.KnownTypes.CopyTo(knownTypes, 0);
             scopeParameters = new Dictionary<string, string>(behaviors.ScopeParametersInternal);
+            customHeaders = new Dictionary<string, string>(behaviors.CustomHeadersInternal);
+            automaticDecompression = behaviors.AutomaticDecompression;
         }
 
         protected SerializationFormat SerializationFormat
@@ -166,11 +173,18 @@ namespace Microsoft.Synchronization.ClientServices
                 webRequest.ContentType = (SerializationFormat == SerializationFormat.ODataAtom)
                                              ? "application/atom+xml"
                                              : "application/json";
-
-
+#if !WINDOWS_PHONE
+                if (automaticDecompression)
+                {
+                    webRequest.Headers["Accept-Encoding"] = "gzip, deflated";
+                }
+#endif
+                foreach (var kvp in customHeaders)
+                {
+                    webRequest.Headers[kvp.Key] = kvp.Value;
+                }
                 // To be sure where it could be raise an error, just mark the step
                 wrapper.Step = HttpState.WriteRequest;
-
 
 #if !NETFX_CORE
                 using (Stream stream = await Task.Factory.FromAsync<Stream>(
@@ -227,7 +241,7 @@ namespace Microsoft.Synchronization.ClientServices
                 else
                 {
 
-                    using (var stream = we.Response.GetResponseStream())
+                    using (var stream = GetWrappedStream(we.Response))
                     {
                         using (var reader = SerializationFormat == SerializationFormat.ODataAtom ?
                             XmlReader.Create(stream) :
@@ -344,6 +358,21 @@ namespace Microsoft.Synchronization.ClientServices
             }
         }
 
+        private Stream GetWrappedStream(WebResponse response)
+        {
+#if !WINDOWS_PHONE
+            if(response.Headers.AllKeys.Contains("Content-Encoding"))
+            {
+                var header = response.Headers["Content-Encoding"];
+                if(header.Contains("gzip"))
+                    return new GZipStream(response.GetResponseStream(), CompressionMode.Decompress, false);
+                else if(header.Contains("deflate"))
+                    return new DeflateStream(response.GetResponseStream(), CompressionMode.Decompress, false);
+            }
+#endif
+            return response.GetResponseStream();
+        }
+
         /// <summary>
         /// Callback for the Upload HttpWebRequest.BeginGetResponse call
         /// </summary>
@@ -353,7 +382,7 @@ namespace Microsoft.Synchronization.ClientServices
             {
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    using (Stream responseStream = response.GetResponseStream())
+                    using (Stream responseStream = GetWrappedStream(response))
                     {
 
                         using (var syncReader = (SerializationFormat == SerializationFormat.ODataAtom)
@@ -506,7 +535,7 @@ namespace Microsoft.Synchronization.ClientServices
             {
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    using (Stream responseStream = response.GetResponseStream())
+                    using (Stream responseStream = GetWrappedStream(response))
                     {
 
 
