@@ -75,5 +75,6 @@ namespace Microsoft.Synchronization.Services
         internal const string NoScopeOrTemplateFound = "No scope or template found on server.";
 
         internal const string InternalServerError = "Internal Server Error";
+        internal const string InvalidTableNameForFilterParameters = "Invalid TableName specified in filter parameters. TableName should match what is in the IOfflineEntity Entities (case insensitive).";
     }
 }
