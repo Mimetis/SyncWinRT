@@ -39,6 +39,7 @@ namespace Microsoft.Synchronization.ClientServices
             knownTypes = new Type[behaviors.KnownTypes.Count];
             behaviors.KnownTypes.CopyTo(knownTypes, 0);
             scopeParameters = new Dictionary<string, string>(behaviors.ScopeParametersInternal);
+            this.CookieContainer = behaviors.CookieContainer;
         }
 
         protected SerializationFormat SerializationFormat
@@ -157,6 +158,10 @@ namespace Microsoft.Synchronization.ClientServices
                     // Use WebRequest.Create the request. This uses any user defined prefix preferences for certain paths
                     webRequest = (HttpWebRequest)WebRequest.Create(requestUri.ToString());
                 }
+
+                // set cookies if exists
+                if (CookieContainer != null)
+                    webRequest.CookieContainer = CookieContainer;
 
                 // Set the method type
                 webRequest.Method = "POST";
@@ -579,5 +584,7 @@ namespace Microsoft.Synchronization.ClientServices
 
       
         #endregion
+
+        public CookieContainer CookieContainer { get; set; }
     }
 }
