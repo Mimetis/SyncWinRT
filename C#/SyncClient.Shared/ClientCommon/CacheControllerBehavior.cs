@@ -174,6 +174,6 @@ namespace Microsoft.Synchronization.ClientServices
             }
         }
         
-        public CookieContainer CookieContainer { get; set; }
+        public CookieContainer CookieContainer { get; internal set; }
     }
 }

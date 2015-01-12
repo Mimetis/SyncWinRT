@@ -157,8 +157,9 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         /// <remarks>
         /// If the Uri specified is different from the one that is stored in the cache path, the
         /// Load method will throw an InvalidOperationException.
+        /// 1/11/2015 Added an optional parameter to allow setting cookies
         /// </remarks>
-        public SQLiteContext(OfflineSchema schema, string scopeName, string datbaseName, Uri uri, CookieContainer cookieContainer)
+        public SQLiteContext(OfflineSchema schema, string scopeName, string datbaseName, Uri uri, CookieContainer cookieContainer = null)
         {
             if (schema == null)
                 throw new ArgumentNullException("OfflineSchema");
