@@ -563,7 +563,8 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                         var querySelect = SQLiteConstants.SelectChanges;
 
                         var columnsDcl = new List<String>();
-                        string pkColumnName = string.Empty;
+                        var columnsPK = new List<String>();
+
 
                         // Foreach columns, create the tsql command to execute
                         foreach (var c in map.Columns)
@@ -575,13 +576,14 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                             if (c.IsPK)
                             {
                                 columnsDcl.Add("[t].[" + c.Name + "]");
-                                pkColumnName = c.Name;
+                                columnsPK.Add("[s].[" + c.Name + "] = [t].[" + c.Name + "]");
                             }
 
                         }
 
                         var decl = string.Join(",\n", columnsDcl.ToArray());
-                        querySelect = String.Format(querySelect, map.TableName, pkColumnName, decl);
+                        var pk = string.Join(" \nAND ", columnsPK.ToArray());
+                        querySelect = String.Format(querySelect, map.TableName, pk, decl);
 
                         // Prepare command
                         using (var stmt = connection.Prepare(querySelect))
