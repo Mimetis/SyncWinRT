@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Synchronization.Data;
+using System.Net;
 
 namespace Microsoft.Synchronization.ClientServices.CodeDom
 {
@@ -155,6 +156,12 @@ namespace Microsoft.Synchronization.ClientServices.CodeDom
             ctor.Attributes = MemberAttributes.Public;
             ctor.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), Constants.ClientCachePathArgName));
             ctor.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Uri), Constants.ClientServiceUriArgName));
+            // add the optional CookieContainer parameter
+            var cpdeCookieContainer = new CodeParameterDeclarationExpression(typeof(CookieContainer), Constants.ClientServiceCookieContainerArgName);
+            cpdeCookieContainer.CustomAttributes.Add(new CodeAttributeDeclaration(Constants.ClientServiceCookieContainerArgAttrOptional));
+            cpdeCookieContainer.CustomAttributes.Add(new CodeAttributeDeclaration(Constants.ClientServiceCookieContainerArgAttrDefaultParam, new CodeAttributeArgument(new CodePrimitiveExpression(null))));
+            ctor.Parameters.Add(cpdeCookieContainer);
+
             ctor.BaseConstructorArgs.Add(
                 new CodeMethodInvokeExpression(
                     new CodeMethodReferenceExpression(

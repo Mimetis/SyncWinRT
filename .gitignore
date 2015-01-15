@@ -157,3 +157,5 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+C#/SyncClient.Windows81/SyncClient.Windows8.csproj
+C#/WinRTClient/packages.config

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Synchronization.ClientServices.Common;
 #if ( WINDOWS_PHONE || NETFX_CORE)
 using Windows.Storage;
+using System.Net;
 #endif
 
 
@@ -64,6 +65,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         /// Specifies that the c has been disposed.
         /// </summary>
         private bool isDisposed;
+        private System.Net.CookieContainer cookieContainer;
 
         /// <summary>
         /// Used to detect if this is the first sync to the server.
@@ -155,8 +157,9 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         /// <remarks>
         /// If the Uri specified is different from the one that is stored in the cache path, the
         /// Load method will throw an InvalidOperationException.
+        /// 1/11/2015 Added an optional parameter to allow setting cookies
         /// </remarks>
-        public SQLiteContext(OfflineSchema schema, string scopeName, string datbaseName, Uri uri)
+        public SQLiteContext(OfflineSchema schema, string scopeName, string datbaseName, Uri uri, CookieContainer cookieContainer = null)
         {
             if (schema == null)
                 throw new ArgumentNullException("OfflineSchema");
@@ -175,6 +178,8 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             this.scopeUri = uri;
             this.scopeName = scopeName;
             this.databaseName = datbaseName;
+            // set cookiecontainer
+            this.cookieContainer = cookieContainer;
 
 #if ( WINDOWS_PHONE || NETFX_CORE) 
             var localPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, databaseName);
@@ -497,7 +502,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         /// </summary>
         private void CreateCacheController()
         {
-            cacheController = new CacheController(scopeUri, scopeName, this);
+            cacheController = new CacheController(scopeUri, scopeName, this, cookieContainer);
 
             CacheControllerBehavior behavior = cacheController.ControllerBehavior;
 
