@@ -88,11 +88,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="SQLite.WP80, Version=3.8.6">
-      <Name>SQLite for Windows Phone %28SQLite.WP80, Version=3.8.6%29</Name>
-    </SDKReference>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="SQLitePCL, Version=3.8.5.0, Culture=neutral, PublicKeyToken=bddade01e9c850c5, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\SQLitePCL.3.8.5.1\lib\wp8\SQLitePCL.dll</HintPath>
@@ -127,7 +122,7 @@
       <NugetOutputDir>$(SolutionDir)Nuget\SyncClient.SQLite\</NugetOutputDir>
       <!-- Nuget platform -->
       <NugetFxWP8>windowsphone8</NugetFxWP8>
-       <!-- Nuget local repository -->
+      <!-- Nuget local repository -->
       <NugetRepositoryDir>
         C:\Projects\PERSONAL\Nuget\
       </NugetRepositoryDir>
@@ -141,13 +136,9 @@
       <NugetInputFiles Include="$(OutDir)\Microsoft.Synchronization.ClientServices.WP8.dll" />
     </ItemGroup>
     <!-- Copy x86 Files to lib for VS design time -->
-    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'x86') )" SourceFiles="@(NugetInputFiles)" 
-          ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)lib\$(NugetFxWP8)\%(Filename)%(Extension)')" />
-    
-     <!-- Copy Files to Working directories -->
-    <Copy Condition="'$(Configuration)'=='Release'" SourceFiles="@(NugetInputFiles)" ContinueOnError="true" 
-          DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)build\$(NugetFxWP8)\$(Platform)\%(Filename)%(Extension)')" />
-        
+    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'x86') )" SourceFiles="@(NugetInputFiles)" ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)lib\$(NugetFxWP8)\%(Filename)%(Extension)')" />
+    <!-- Copy Files to Working directories -->
+    <Copy Condition="'$(Configuration)'=='Release'" SourceFiles="@(NugetInputFiles)" ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)build\$(NugetFxWP8)\$(Platform)\%(Filename)%(Extension)')" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

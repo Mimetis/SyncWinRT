@@ -53,7 +53,8 @@ namespace Microsoft.Synchronization.ClientServices
         /// <param name="serviceUri">Remote sync service Uri with a trailing "/" parameter.</param>
         /// <param name="scopeName">The scope name being synchronized</param>
         /// <param name="localProvider">The OfflineSyncProvider instance for the local store.</param>
-        public CacheController(Uri serviceUri, string scopeName, OfflineSyncProvider localProvider)
+        /// <param name="cookieContainer">The optional CookieContainer in case cookies are needed (such as Cookie based Authentication)</param>
+        public CacheController(Uri serviceUri, string scopeName, OfflineSyncProvider localProvider, CookieContainer cookieContainer = null)
         {
             if (serviceUri == null)
                 throw new ArgumentNullException("serviceUri");
@@ -73,6 +74,7 @@ namespace Microsoft.Synchronization.ClientServices
 
             this.controllerBehavior = new CacheControllerBehavior();
             this.controllerBehavior.ScopeName = scopeName;
+            this.controllerBehavior.CookieContainer = cookieContainer;
         }
 
         /// <summary>
