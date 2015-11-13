@@ -28,7 +28,10 @@ namespace Microsoft.Synchronization.ClientServices
         Provision,
         Deprovision,
         Codegen,
-        Deprovisionstore
+        Deprovisionstore,
+        DeprovisionstoreScript,
+        ProvisionScript,
+        DeprovisionScript
     }
 
     /// <summary>

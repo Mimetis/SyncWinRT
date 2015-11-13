@@ -72,8 +72,8 @@ namespace SyncSvcUtilUI
             this.splitContainer1.Panel2.Controls.Add(this.exitBtn);
             this.splitContainer1.Panel2.Controls.Add(this.nextBtn);
             this.splitContainer1.Panel2.Controls.Add(this.backBtn);
-            this.splitContainer1.Size = new System.Drawing.Size(584, 414);
-            this.splitContainer1.SplitterDistance = 361;
+            this.splitContainer1.Size = new System.Drawing.Size(589, 496);
+            this.splitContainer1.SplitterDistance = 432;
             this.splitContainer1.TabIndex = 0;
             // 
             // wizardPagePanel
@@ -81,7 +81,7 @@ namespace SyncSvcUtilUI
             this.wizardPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.wizardPagePanel.Location = new System.Drawing.Point(0, 0);
             this.wizardPagePanel.Name = "wizardPagePanel";
-            this.wizardPagePanel.Size = new System.Drawing.Size(582, 359);
+            this.wizardPagePanel.Size = new System.Drawing.Size(587, 430);
             this.wizardPagePanel.TabIndex = 0;
             // 
             // exitBtn
@@ -118,7 +118,7 @@ namespace SyncSvcUtilUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 414);
+            this.ClientSize = new System.Drawing.Size(589, 496);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(600, 450);

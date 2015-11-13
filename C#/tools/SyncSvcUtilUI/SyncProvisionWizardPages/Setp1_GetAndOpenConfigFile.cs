@@ -113,7 +113,13 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             string provisionMode = "provision";
             if (deprovOption.Checked) provisionMode = "deprovision";
             if (deprovstoreOption.Checked) provisionMode = "deprovisionstore";
+            if (provisionScriptOption.Checked) provisionMode = "provisionscript";
+            if (deprovScriptOption.Checked) provisionMode = "deprovisionscript";
+            if (deprovstoreScriptOption.Checked) provisionMode = "deprovisionstorescript";
             WizardHelper.Instance.ProvisioningWizardHelper[WizardHelper.SELECTED_PROV_MODE] = provisionMode;
+
+            WizardHelper.Instance.CodeGenWizardHelper[WizardHelper.CODEGEN_OUTDIRECTORY] = this.outputDirTxtBox.Text;
+
 
             return true;
         }
@@ -128,5 +134,13 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             // no-op
         }
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (this.folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                this.outputDirTxtBox.Text = this.folderBrowserDialog1.SelectedPath;
+            }
+        }
     }
 }

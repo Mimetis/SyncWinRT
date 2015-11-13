@@ -55,6 +55,7 @@ namespace SyncSvcUtilUI
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.exitBtn = new System.Windows.Forms.Button();
             this.helpBtn = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -87,8 +88,8 @@ namespace SyncSvcUtilUI
             // 
             this.splitContainer1.Panel2.Controls.Add(this.exitBtn);
             this.splitContainer1.Panel2.Controls.Add(this.helpBtn);
-            this.splitContainer1.Size = new System.Drawing.Size(559, 337);
-            this.splitContainer1.SplitterDistance = 288;
+            this.splitContainer1.Size = new System.Drawing.Size(577, 401);
+            this.splitContainer1.SplitterDistance = 342;
             this.splitContainer1.TabIndex = 0;
             // 
             // pictureBox3
@@ -119,7 +120,7 @@ namespace SyncSvcUtilUI
             this.label3.Size = new System.Drawing.Size(457, 39);
             this.label3.TabIndex = 8;
             this.label3.Text = "Generate server side or client side code according to the provisioned database or" +
-                " CSDL";
+    " CSDL";
             // 
             // codeGenLink
             // 
@@ -128,7 +129,7 @@ namespace SyncSvcUtilUI
             this.codeGenLink.LinkBehavior = System.Windows.Forms.LinkBehavior.AlwaysUnderline;
             this.codeGenLink.Location = new System.Drawing.Point(88, 197);
             this.codeGenLink.Name = "codeGenLink";
-            this.codeGenLink.Size = new System.Drawing.Size(129, 16);
+            this.codeGenLink.Size = new System.Drawing.Size(167, 20);
             this.codeGenLink.TabIndex = 7;
             this.codeGenLink.TabStop = true;
             this.codeGenLink.Text = "Code Generation";
@@ -142,7 +143,7 @@ namespace SyncSvcUtilUI
             this.label2.Size = new System.Drawing.Size(457, 39);
             this.label2.TabIndex = 6;
             this.label2.Text = "Provision the specified SQL Server database with sync scope related artifacts or " +
-                "deprovision the database by removing the sync scope.";
+    "deprovision the database by removing the sync scope.";
             // 
             // provLink
             // 
@@ -151,7 +152,7 @@ namespace SyncSvcUtilUI
             this.provLink.LinkBehavior = System.Windows.Forms.LinkBehavior.AlwaysUnderline;
             this.provLink.Location = new System.Drawing.Point(88, 107);
             this.provLink.Name = "provLink";
-            this.provLink.Size = new System.Drawing.Size(184, 16);
+            this.provLink.Size = new System.Drawing.Size(244, 20);
             this.provLink.TabIndex = 5;
             this.provLink.TabStop = true;
             this.provLink.Text = "Provision or Deprovision";
@@ -165,7 +166,7 @@ namespace SyncSvcUtilUI
             this.label1.Size = new System.Drawing.Size(457, 39);
             this.label1.TabIndex = 4;
             this.label1.Text = "Generate new or edit existing sync configuration file to add or edit database ins" +
-                "tances, scopes or filter clause definition.";
+    "tances, scopes or filter clause definition.";
             // 
             // genOrEdirSyncCfgLink
             // 
@@ -174,7 +175,7 @@ namespace SyncSvcUtilUI
             this.genOrEdirSyncCfgLink.LinkBehavior = System.Windows.Forms.LinkBehavior.AlwaysUnderline;
             this.genOrEdirSyncCfgLink.Location = new System.Drawing.Point(88, 24);
             this.genOrEdirSyncCfgLink.Name = "genOrEdirSyncCfgLink";
-            this.genOrEdirSyncCfgLink.Size = new System.Drawing.Size(267, 16);
+            this.genOrEdirSyncCfgLink.Size = new System.Drawing.Size(352, 20);
             this.genOrEdirSyncCfgLink.TabIndex = 3;
             this.genOrEdirSyncCfgLink.TabStop = true;
             this.genOrEdirSyncCfgLink.Text = "Generate or Edit Sync Configuration";
@@ -213,7 +214,7 @@ namespace SyncSvcUtilUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(559, 337);
+            this.ClientSize = new System.Drawing.Size(577, 401);
             this.Controls.Add(this.splitContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -223,6 +224,7 @@ namespace SyncSvcUtilUI
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();

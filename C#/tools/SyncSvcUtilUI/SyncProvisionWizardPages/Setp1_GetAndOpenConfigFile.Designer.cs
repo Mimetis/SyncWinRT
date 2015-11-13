@@ -49,6 +49,9 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.label5 = new System.Windows.Forms.Label();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.settingsGrp = new System.Windows.Forms.GroupBox();
+            this.deprovstoreScriptOption = new System.Windows.Forms.RadioButton();
+            this.deprovScriptOption = new System.Windows.Forms.RadioButton();
+            this.provisionScriptOption = new System.Windows.Forms.RadioButton();
             this.deprovstoreOption = new System.Windows.Forms.RadioButton();
             this.deprovOption = new System.Windows.Forms.RadioButton();
             this.provisionOption = new System.Windows.Forms.RadioButton();
@@ -57,6 +60,10 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.label6 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.outputDirTxtBox = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.openPanel.SuspendLayout();
             this.settingsGrp.SuspendLayout();
             this.SuspendLayout();
@@ -67,7 +74,7 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.label1.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(17, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 16);
+            this.label1.Size = new System.Drawing.Size(88, 20);
             this.label1.TabIndex = 1;
             this.label1.Text = "Settings";
             // 
@@ -81,14 +88,14 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.openPanel.Controls.Add(this.label5);
             this.openPanel.Location = new System.Drawing.Point(20, 51);
             this.openPanel.Name = "openPanel";
-            this.openPanel.Size = new System.Drawing.Size(500, 67);
+            this.openPanel.Size = new System.Drawing.Size(523, 67);
             this.openPanel.TabIndex = 6;
             // 
             // openCfgTextBox
             // 
             this.openCfgTextBox.Location = new System.Drawing.Point(148, 11);
             this.openCfgTextBox.Name = "openCfgTextBox";
-            this.openCfgTextBox.Size = new System.Drawing.Size(247, 21);
+            this.openCfgTextBox.Size = new System.Drawing.Size(247, 24);
             this.openCfgTextBox.TabIndex = 4;
             // 
             // openBtn
@@ -108,7 +115,7 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.label5.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(3, 15);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(139, 13);
+            this.label5.Size = new System.Drawing.Size(168, 17);
             this.label5.TabIndex = 3;
             this.label5.Text = "Specify the config file: ";
             // 
@@ -121,6 +128,12 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.settingsGrp.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.settingsGrp.Controls.Add(this.button1);
+            this.settingsGrp.Controls.Add(this.outputDirTxtBox);
+            this.settingsGrp.Controls.Add(this.deprovstoreScriptOption);
+            this.settingsGrp.Controls.Add(this.label2);
+            this.settingsGrp.Controls.Add(this.deprovScriptOption);
+            this.settingsGrp.Controls.Add(this.provisionScriptOption);
             this.settingsGrp.Controls.Add(this.deprovstoreOption);
             this.settingsGrp.Controls.Add(this.deprovOption);
             this.settingsGrp.Controls.Add(this.provisionOption);
@@ -132,17 +145,47 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.settingsGrp.Enabled = false;
             this.settingsGrp.Location = new System.Drawing.Point(20, 124);
             this.settingsGrp.Name = "settingsGrp";
-            this.settingsGrp.Size = new System.Drawing.Size(500, 183);
+            this.settingsGrp.Size = new System.Drawing.Size(523, 345);
             this.settingsGrp.TabIndex = 7;
             this.settingsGrp.TabStop = false;
             this.settingsGrp.Text = "Settings";
+            // 
+            // deprovstoreScriptOption
+            // 
+            this.deprovstoreScriptOption.AutoSize = true;
+            this.deprovstoreScriptOption.Location = new System.Drawing.Point(170, 179);
+            this.deprovstoreScriptOption.Name = "deprovstoreScriptOption";
+            this.deprovstoreScriptOption.Size = new System.Drawing.Size(266, 21);
+            this.deprovstoreScriptOption.TabIndex = 10;
+            this.deprovstoreScriptOption.Text = "Deprovision complete store script";
+            this.deprovstoreScriptOption.UseVisualStyleBackColor = true;
+            // 
+            // deprovScriptOption
+            // 
+            this.deprovScriptOption.AutoSize = true;
+            this.deprovScriptOption.Location = new System.Drawing.Point(309, 156);
+            this.deprovScriptOption.Name = "deprovScriptOption";
+            this.deprovScriptOption.Size = new System.Drawing.Size(153, 21);
+            this.deprovScriptOption.TabIndex = 9;
+            this.deprovScriptOption.Text = "DeprovisionScript";
+            this.deprovScriptOption.UseVisualStyleBackColor = true;
+            // 
+            // provisionScriptOption
+            // 
+            this.provisionScriptOption.AutoSize = true;
+            this.provisionScriptOption.Location = new System.Drawing.Point(170, 156);
+            this.provisionScriptOption.Name = "provisionScriptOption";
+            this.provisionScriptOption.Size = new System.Drawing.Size(133, 21);
+            this.provisionScriptOption.TabIndex = 8;
+            this.provisionScriptOption.Text = "ProvisionScript";
+            this.provisionScriptOption.UseVisualStyleBackColor = true;
             // 
             // deprovstoreOption
             // 
             this.deprovstoreOption.AutoSize = true;
             this.deprovstoreOption.Location = new System.Drawing.Point(170, 130);
             this.deprovstoreOption.Name = "deprovstoreOption";
-            this.deprovstoreOption.Size = new System.Drawing.Size(182, 17);
+            this.deprovstoreOption.Size = new System.Drawing.Size(222, 21);
             this.deprovstoreOption.TabIndex = 7;
             this.deprovstoreOption.Text = "Deprovision complete store";
             this.deprovstoreOption.UseVisualStyleBackColor = true;
@@ -152,7 +195,7 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.deprovOption.AutoSize = true;
             this.deprovOption.Location = new System.Drawing.Point(277, 107);
             this.deprovOption.Name = "deprovOption";
-            this.deprovOption.Size = new System.Drawing.Size(93, 17);
+            this.deprovOption.Size = new System.Drawing.Size(112, 21);
             this.deprovOption.TabIndex = 6;
             this.deprovOption.Text = "Deprovision";
             this.deprovOption.UseVisualStyleBackColor = true;
@@ -163,7 +206,7 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.provisionOption.Checked = true;
             this.provisionOption.Location = new System.Drawing.Point(170, 107);
             this.provisionOption.Name = "provisionOption";
-            this.provisionOption.Size = new System.Drawing.Size(77, 17);
+            this.provisionOption.Size = new System.Drawing.Size(92, 21);
             this.provisionOption.TabIndex = 5;
             this.provisionOption.TabStop = true;
             this.provisionOption.Text = "Provision";
@@ -175,7 +218,7 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.dbsBox.FormattingEnabled = true;
             this.dbsBox.Location = new System.Drawing.Point(170, 68);
             this.dbsBox.Name = "dbsBox";
-            this.dbsBox.Size = new System.Drawing.Size(226, 22);
+            this.dbsBox.Size = new System.Drawing.Size(226, 26);
             this.dbsBox.TabIndex = 4;
             // 
             // scopesBox
@@ -184,7 +227,7 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.scopesBox.FormattingEnabled = true;
             this.scopesBox.Location = new System.Drawing.Point(170, 27);
             this.scopesBox.Name = "scopesBox";
-            this.scopesBox.Size = new System.Drawing.Size(226, 22);
+            this.scopesBox.Size = new System.Drawing.Size(226, 26);
             this.scopesBox.TabIndex = 3;
             // 
             // label6
@@ -193,7 +236,7 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.label6.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.Location = new System.Drawing.Point(78, 109);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(85, 13);
+            this.label6.Size = new System.Drawing.Size(101, 17);
             this.label6.TabIndex = 2;
             this.label6.Text = "Select Mode";
             // 
@@ -203,7 +246,7 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.label4.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(4, 71);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(159, 13);
+            this.label4.Size = new System.Drawing.Size(186, 17);
             this.label4.TabIndex = 1;
             this.label4.Text = "Select Target Database";
             // 
@@ -213,20 +256,52 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             this.label3.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(38, 30);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(125, 13);
+            this.label3.Size = new System.Drawing.Size(148, 17);
             this.label3.TabIndex = 0;
             this.label3.Text = "Select Sync Scope";
             // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(410, 206);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 10;
+            this.button1.Text = "Browse";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // outputDirTxtBox
+            // 
+            this.outputDirTxtBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.outputDirTxtBox.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.outputDirTxtBox.Location = new System.Drawing.Point(170, 207);
+            this.outputDirTxtBox.Name = "outputDirTxtBox";
+            this.outputDirTxtBox.Size = new System.Drawing.Size(221, 26);
+            this.outputDirTxtBox.TabIndex = 9;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(40, 211);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(127, 17);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "Output Directory";
+            // 
             // Setp1_GetAndOpenConfigFile
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.settingsGrp);
             this.Controls.Add(this.openPanel);
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "Setp1_GetAndOpenConfigFile";
-            this.Size = new System.Drawing.Size(560, 340);
+            this.Size = new System.Drawing.Size(583, 502);
             this.openPanel.ResumeLayout(false);
             this.openPanel.PerformLayout();
             this.settingsGrp.ResumeLayout(false);
@@ -253,5 +328,12 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
         private System.Windows.Forms.RadioButton provisionOption;
         private System.Windows.Forms.RadioButton deprovOption;
         private System.Windows.Forms.RadioButton deprovstoreOption;
+        private System.Windows.Forms.RadioButton deprovstoreScriptOption;
+        private System.Windows.Forms.RadioButton deprovScriptOption;
+        private System.Windows.Forms.RadioButton provisionScriptOption;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox outputDirTxtBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
     }
 }
