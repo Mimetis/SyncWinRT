@@ -1,25 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
-  <metadata>
-    <id>SyncClient.SQLite.Service</id>
-    <version>3.8.6.2</version>
-    <title>SyncClient SQLite Toolkit</title>
-    <authors>Sébastien Pertus</authors>
-    <owners>Sébastien Pertus</owners>
-    <projectUrl>https://github.com/Mimetis/SyncWinRT</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>
-      This package is the WinRT implementation of the Sync Framework Toolkit to enabled synchronization with WinRT 8.1 or Windows Phone 8.0 / Windows Phone 8.1 and SQLite.
+    <metadata>
+        <id>SyncClient.SQLite.Service</id>
+        <version>3.8.6.3</version>
+        <title>SyncClient SQLite Toolkit</title>
+        <authors>Sébastien Pertus</authors>
+        <owners>Sébastien Pertus</owners>
+        <projectUrl>https://github.com/Mimetis/SyncWinRT</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>This package is the WinRT implementation of the Sync Framework Toolkit to enabled synchronization with WinRT 8.1 or Windows Phone 8.0 / Windows Phone 8.1 and SQLite.
       Installing package on Client WinRT (Windows or Windows Phone) will install Microsoft.Synchronization.ClientServices.WinRT.dll.
       Installing package on Client WP8 (Windows Phone 8.0 or Windows Phone 8.1 Silverlight) will install Microsoft.Synchronization.ClientServices.WP8.dll
-      Installing package on Server WebSite (Fx 35, 40, 45) will install Microsoft.Synchronization.Services.dll
-    </description>
-    <summary>Sync Toolkit for Windows Phone with SQLite.</summary>
-    <tags>SyncFramework WinRT SQLite</tags>
-    <references>
-      <group targetFramework="net35">
-        <reference file="Microsoft.Synchronization.Services.dll" />
-      </group>
-    </references>
-  </metadata>
+      Installing package on Server WebSite (Fx 35, 40, 45) will install Microsoft.Synchronization.Services.dll</description>
+        <summary>Sync Toolkit for Windows Phone with SQLite.</summary>
+        <tags>SyncFramework WinRT SQLite</tags>
+        <references>
+            <group targetFramework=".NETFramework3.5">
+                <reference file="Microsoft.Synchronization.Services.dll" />
+            </group>
+        </references>
+    </metadata>
+    <files>
+        <file src="..\..\server\Debug\Microsoft.Synchronization.Services.dll" target="lib\net35\Microsoft.Synchronization.Services.dll" />
+        <file src="tools\SyncSvcUtil.exe" target="tools\SyncSvcUtil.exe" />
+        <file src="tools\SyncSvcUtilUI.exe" target="tools\SyncSvcUtilUI.exe" />
+        <file src="tools\SyncSvcUtilUI.exe.config" target="tools\SyncSvcUtilUI.exe.config" />
+    </files>
 </package>

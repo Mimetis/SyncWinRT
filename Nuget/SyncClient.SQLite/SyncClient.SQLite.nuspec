@@ -35,16 +35,15 @@
         </references>
     </metadata>
     <files>
-        <file src="..\C#\SyncClient.Android\bin\Release\Microsoft.Synchronization.ClientServices.Android.dll" target="lib\MonoAndroid\Microsoft.Synchronization.ClientServices.Android.dll" />
-        <file src="..\C#\SyncClient.iOS\bin\iPhone\Release\Microsoft.Synchronization.ClientServices.iOS.dll" target="lib\MonoTouch\Microsoft.Synchronization.ClientServices.iOS.dll" />
-        <file src="..\C#\SyncClient.Net\bin\Release\Microsoft.Synchronization.ClientServices.Net.dll" target="lib\net45\Microsoft.Synchronization.ClientServices.Net.dll" />
-        <file src="..\C#\SyncClient.Universal\bin\Release\Microsoft.Synchronization.ClientServices.WinRT.dll" target="lib\portable-windows8+net45\Microsoft.Synchronization.ClientServices.WinRT.dll" />
-        <file src="..\C#\WP8Client\bin\x86\Release\Microsoft.Synchronization.ClientServices.WP8.dll" target="lib\wp8\Microsoft.Synchronization.ClientServices.WP8.dll" />
-        <file src="..\C#\WP8Client\bin\x86\Release\Microsoft.Synchronization.ClientServices.WP8.dll" target="lib\wp81\Microsoft.Synchronization.ClientServices.WP8.dll" />
-        <file src="..\C#\SyncClient.Universal\bin\Release\Microsoft.Synchronization.ClientServices.WinRT.dll" target="lib\wpa81\Microsoft.Synchronization.ClientServices.WinRT.dll" />
-        <file src="SyncClient.SQLite\tools\SyncSvcUtil.exe" target="tools\SyncSvcUtil.exe" />
-        <file src="SyncClient.SQLite\tools\SyncSvcUtilUI.exe" target="tools\SyncSvcUtilUI.exe" />
-        <file src="SyncClient.SQLite\tools\SyncSvcUtilUI.exe.config" target="tools\SyncSvcUtilUI.exe.config" />
-        <file src="SyncClient.SQLite\SyncClient.SQLite.3.8.4.3.nupkg" target="SyncClient.SQLite.3.8.4.3.nupkg" />
+        <file src="..\..\C#\SyncClient.Android\bin\Release\Microsoft.Synchronization.ClientServices.Android.dll" target="lib\MonoAndroid\Microsoft.Synchronization.ClientServices.Android.dll" />
+        <file src="..\..\C#\SyncClient.iOS\bin\iPhone\Release\Microsoft.Synchronization.ClientServices.iOS.dll" target="lib\MonoTouch\Microsoft.Synchronization.ClientServices.iOS.dll" />
+        <file src="..\..\C#\SyncClient.Net\bin\Release\Microsoft.Synchronization.ClientServices.Net.dll" target="lib\net45\Microsoft.Synchronization.ClientServices.Net.dll" />
+        <file src="..\..\C#\SyncClient.Universal\bin\Release\Microsoft.Synchronization.ClientServices.WinRT.dll" target="lib\portable-windows8+net45\Microsoft.Synchronization.ClientServices.WinRT.dll" />
+        <file src="..\..\C#\WP8Client\bin\x86\Release\Microsoft.Synchronization.ClientServices.WP8.dll" target="lib\wp8\Microsoft.Synchronization.ClientServices.WP8.dll" />
+        <file src="..\..\C#\WP8Client\bin\x86\Release\Microsoft.Synchronization.ClientServices.WP8.dll" target="lib\wp81\Microsoft.Synchronization.ClientServices.WP8.dll" />
+        <file src="..\..\C#\SyncClient.Universal\bin\Release\Microsoft.Synchronization.ClientServices.WinRT.dll" target="lib\wpa81\Microsoft.Synchronization.ClientServices.WinRT.dll" />
+        <file src="tools\SyncSvcUtil.exe" target="tools\SyncSvcUtil.exe" />
+        <file src="tools\SyncSvcUtilUI.exe" target="tools\SyncSvcUtilUI.exe" />
+        <file src="tools\SyncSvcUtilUI.exe.config" target="tools\SyncSvcUtilUI.exe.config" />
     </files>
 </package>
