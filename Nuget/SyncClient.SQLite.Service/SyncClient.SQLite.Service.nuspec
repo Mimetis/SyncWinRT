@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
   <metadata>
-    <id>SyncClient.SQLite</id>
+    <id>SyncClient.SQLite.Service</id>
     <version>3.8.6.2</version>
     <title>SyncClient SQLite Toolkit</title>
     <authors>Sébastien Pertus</authors>
@@ -14,25 +14,11 @@
       Installing package on Client WP8 (Windows Phone 8.0 or Windows Phone 8.1 Silverlight) will install Microsoft.Synchronization.ClientServices.WP8.dll
       Installing package on Server WebSite (Fx 35, 40, 45) will install Microsoft.Synchronization.Services.dll
     </description>
-    <summary>Sync Toolkit for Windows Phone, Windows Store, Android, iOS and plain .NET with SQLite.</summary>
+    <summary>Sync Toolkit for Windows Phone with SQLite.</summary>
     <tags>SyncFramework WinRT SQLite</tags>
-	<dependencies>
-		<group targetFramework="windowsphone8">
-			<dependency id="SQLitePCL" version="3.8.5.1" />
-		</group>
-		<group targetFramework="portable-windows8+net45">
-			<dependency id="SQLitePCL" version="3.8.5.1" />
-		</group>
-	</dependencies>
     <references>
-      <group targetFramework="net45">
-        <reference file="Microsoft.Synchronization.ClientServices.Net.dll" />
-      </group>
-      <group targetFramework="windowsphone8">
-        <reference file="Microsoft.Synchronization.ClientServices.WP8.dll" />
-      </group>
-      <group targetFramework="portable-windows8+net45">
-        <reference file="Microsoft.Synchronization.ClientServices.WinRT.dll" />
+      <group targetFramework="net35">
+        <reference file="Microsoft.Synchronization.Services.dll" />
       </group>
     </references>
   </metadata>
