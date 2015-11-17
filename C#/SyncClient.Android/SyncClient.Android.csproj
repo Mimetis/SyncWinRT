@@ -100,4 +100,8 @@
     <!-- Copy Files to Working directories -->
     <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'AnyCPU') )" SourceFiles="@(NugetInputFiles)" ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)build\$(NugetFx)\%(Filename)%(Extension)')" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>
