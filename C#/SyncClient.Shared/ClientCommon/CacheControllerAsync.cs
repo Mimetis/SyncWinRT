@@ -53,7 +53,8 @@ namespace Microsoft.Synchronization.ClientServices
         /// <param name="serviceUri">Remote sync service Uri with a trailing "/" parameter.</param>
         /// <param name="scopeName">The scope name being synchronized</param>
         /// <param name="localProvider">The OfflineSyncProvider instance for the local store.</param>
-        public CacheController(Uri serviceUri, string scopeName, OfflineSyncProvider localProvider)
+        /// <param name="cookieContainer">The optional CookieContainer in case cookies are needed (such as Cookie based Authentication)</param>
+        public CacheController(Uri serviceUri, string scopeName, OfflineSyncProvider localProvider, CookieContainer cookieContainer = null)
         {
             if (serviceUri == null)
                 throw new ArgumentNullException("serviceUri");
@@ -73,6 +74,7 @@ namespace Microsoft.Synchronization.ClientServices
 
             this.controllerBehavior = new CacheControllerBehavior();
             this.controllerBehavior.ScopeName = scopeName;
+            this.controllerBehavior.CookieContainer = cookieContainer;
         }
 
         /// <summary>
@@ -131,8 +133,15 @@ namespace Microsoft.Synchronization.ClientServices
                 if (cancellationToken.IsCancellationRequested)
                     cancellationToken.ThrowIfCancellationRequested();
 
-                // then Download (be careful, could be in batch mode)
-                statistics = await this.EnqueueDownloadRequest(statistics, cancellationToken, progress);
+                // When there are records records that are not uploading successfully
+                // a successfull download 1-N records will cause anchor to be updated.
+                // if anchor is updated then the records on the device will not be attempted for upload again
+                // on subsequent syncs. therefore check for null Error
+                if (statistics.Error == null)
+                {
+                    // then Download (be careful, could be in batch mode)
+                    statistics = await this.EnqueueDownloadRequest(statistics, cancellationToken, progress);
+                }
 
                 // Set end time
                 statistics.EndTime = DateTime.Now;

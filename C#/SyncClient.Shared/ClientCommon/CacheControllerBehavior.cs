@@ -21,6 +21,8 @@ namespace Microsoft.Synchronization.ClientServices
         //Action<HttpWebRequest, Action<HttpWebRequest>> beforeSendingRequestHandler;
         //Action<HttpWebResponse> afterSendingResponse;
         readonly Dictionary<string, string> scopeParameters;
+        readonly Dictionary<string, string> customHeaders;
+        readonly bool automaticDecompression;
 
         internal CacheControllerBehavior()
         {
@@ -111,7 +113,10 @@ namespace Microsoft.Synchronization.ClientServices
             }
         }
 
-    
+        /// <summary>
+        /// Represents if AutomaticDecompression should be used for outgoing WebRequest.
+        /// </summary>
+        public bool AutomaticDecompression { get; set; }
 
         /// <summary>
         /// Adds an Type to the collection of KnownTypes.
@@ -149,6 +154,29 @@ namespace Microsoft.Synchronization.ClientServices
             }
         }
 
+        /// <summary>
+        /// Function that users will use to add any custom headers and their values.
+        /// </summary>
+        /// <param name="key">parameter name as string</param>
+        /// <param name="value">parameter value as string</param>
+        public void AddCustomHeaders(string key, string value)
+        {
+            if (key == null)
+                throw new ArgumentNullException("key");
+
+            if (string.IsNullOrEmpty(key))
+                throw new ArgumentException("key cannot be empty", "key");
+
+            if (value == null)
+                throw new ArgumentNullException("value");
+
+            lock (this.lockObject)
+            {
+                CheckLockState();
+                this.customHeaders.Add(key, value);
+            }
+        }
+
         private void CheckLockState()
         {
             if (this.locked)
@@ -163,6 +191,14 @@ namespace Microsoft.Synchronization.ClientServices
             }
         }
 
+        internal Dictionary<string, string> CustomHeadersInternal
+        {
+            get
+            {
+                return this.customHeaders;
+            }
+        }
+
         internal bool Locked
         {
             set
@@ -173,7 +209,7 @@ namespace Microsoft.Synchronization.ClientServices
                 }
             }
         }
-
-  
+        
+        public CookieContainer CookieContainer { get; internal set; }
     }
 }

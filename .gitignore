@@ -16,7 +16,10 @@ build/
 [Oo]bj/
 
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
-!packages/*/build/
+#!packages/*/build/
+#it sould be rather
+/packages/
+!packages/repositories.config
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
@@ -154,4 +157,6 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+C#/SyncClient.Windows81/SyncClient.Windows8.csproj
+C#/WinRTClient/packages.config
 /packages/SQLitePCL.3.8.5.1

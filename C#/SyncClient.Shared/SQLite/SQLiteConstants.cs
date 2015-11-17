@@ -72,7 +72,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         public static String SelectChanges =
             "SELECT {2}, t.Oem_IsTombstone, t.Oem_Id, t.Oem_Etag, t.Oem_EditUri " + Environment.NewLine +
             "FROM [{0}_tracking] t " + Environment.NewLine +
-            "LEFT JOIN [{0}] s on s.[{1}] = t.[{1}] " + Environment.NewLine +
+            "LEFT JOIN [{0}] s on {1} " + Environment.NewLine +
             "Where (t.Oem_IsTombStone = 1  " + Environment.NewLine +
             "OR t.Oem_IsDirty = 1 )  " + Environment.NewLine +
             "And t.Oem_LastModifiedDate > ?";

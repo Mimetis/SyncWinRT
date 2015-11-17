@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Synchronization.ClientServices.Common;
 #if ( WINDOWS_PHONE || NETFX_CORE)
 using Windows.Storage;
+using System.Net;
 #endif
 
 
@@ -64,6 +66,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         /// Specifies that the c has been disposed.
         /// </summary>
         private bool isDisposed;
+        private System.Net.CookieContainer cookieContainer;
 
         /// <summary>
         /// Used to detect if this is the first sync to the server.
@@ -155,8 +158,9 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         /// <remarks>
         /// If the Uri specified is different from the one that is stored in the cache path, the
         /// Load method will throw an InvalidOperationException.
+        /// 1/11/2015 Added an optional parameter to allow setting cookies
         /// </remarks>
-        public SQLiteContext(OfflineSchema schema, string scopeName, string databasePath, Uri uri)
+        public SQLiteContext(OfflineSchema schema, string scopeName, string databasePath, Uri uri, CookieContainer cookieContainer = null)
         {
             if (schema == null)
                 throw new ArgumentNullException("schema");
@@ -174,6 +178,8 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             this.schema = schema;
             this.scopeUri = uri;
             this.scopeName = scopeName;
+            // set cookiecontainer
+            this.cookieContainer = cookieContainer;
             this.databaseName = databasePath;
 
             bool isPath = databasePath.Contains('/') || databasePath.Contains('\\');
@@ -193,11 +199,11 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
 #elif (NET)
             localPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), databaseName);
 #elif (__IOS__)
-                // we need to put in /Library/ on iOS5.1 to meet Apple's iCloud terms
-                // (they don't want non-user-generated data in Documents)
+            // we need to put in /Library/ on iOS5.1 to meet Apple's iCloud terms
+            // (they don't want non-user-generated data in Documents)
                 string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
                     // Documents folder
-                string libraryPath = Path.Combine(documentsPath, "..", "Library");
+            string libraryPath = Path.Combine(documentsPath, "..", "Library");
                 localPath = Path.Combine(libraryPath, databaseName);
 #endif
             }
@@ -511,7 +517,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         /// </summary>
         private void CreateCacheController()
         {
-            cacheController = new CacheController(scopeUri, scopeName, this);
+            cacheController = new CacheController(scopeUri, scopeName, this, cookieContainer);
 
             CacheControllerBehavior behavior = cacheController.ControllerBehavior;
 

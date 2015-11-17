@@ -197,6 +197,13 @@ namespace Microsoft.Synchronization.Services
                     0 == String.Compare(p.SqlParameterName, sqlParameterName, StringComparison.InvariantCultureIgnoreCase)
                                             ).Count())
             {
+                // this method is called by InitializeService, which is invoked AFTER the creator. The TableGlobalNameMappings etc. are initialized during creator so we can use them to validate the parameters passed in
+                // Validation of TableName
+                if (0 == TableGlobalNameToTypeMapping.Where(m => 0 == String.Compare(m.Key, tableName)).Count())
+                {
+                    // can not find the same tablename in the mapping
+                    throw SyncServiceException.CreateInternalServerError(Strings.InvalidTableNameForFilterParameters);
+                }
                 _filterParameters.Add(new SqlSyncProviderFilterParameterInfo
                                           {
                                               QueryStringKey = queryStringParam.ToLowerInvariant(),

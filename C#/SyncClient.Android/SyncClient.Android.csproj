@@ -14,8 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <AndroidUseLatestPlatformSdk />
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,7 +47,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
@@ -94,10 +96,8 @@
       <NugetInputFiles Include="$(OutDir)\Microsoft.Synchronization.ClientServices.Android.dll" />
     </ItemGroup>
     <!-- Copy x86 Files to lib for VS design time -->
-    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'AnyCPU') )" SourceFiles="@(NugetInputFiles)" 
-          ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)lib\$(NugetFx)\%(Filename)%(Extension)')" />
+    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'AnyCPU') )" SourceFiles="@(NugetInputFiles)" ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)lib\$(NugetFx)\%(Filename)%(Extension)')" />
     <!-- Copy Files to Working directories -->
-    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'AnyCPU') )" SourceFiles="@(NugetInputFiles)"
-          ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)build\$(NugetFx)\%(Filename)%(Extension)')" />
+    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'AnyCPU') )" SourceFiles="@(NugetInputFiles)" ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)build\$(NugetFx)\%(Filename)%(Extension)')" />
   </Target>
 </Project>

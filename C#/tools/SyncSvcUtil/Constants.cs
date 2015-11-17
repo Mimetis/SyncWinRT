@@ -77,7 +77,7 @@ namespace Microsoft.Synchronization.ClientServices
         public const string SQLiteContextBaseType = "Microsoft.Synchronization.ClientServices.SQLite.SQLiteContext";
         public const string ClientSchemaBaseType = "Microsoft.Synchronization.ClientServices.IsolatedStorage.IsolatedStorageSchema";
         public const string SQLiteSchemaBaseType = "Microsoft.Synchronization.ClientServices.Common.OfflineSchema";
-        public const string ClientIsolatedStoreBaseCtor = "SyncScopeName, cachePath, serviceUri";
+        public const string ClientIsolatedStoreBaseCtor = "SyncScopeName, cachePath, serviceUri, cookieContainer";
         public const string ClientIsolatedStoreCallCtorWithUri = "SyncScopeName, SyncScopeUri";
         public const string ClientIsolatedStoreEncryptedBaseCtor = "SyncScopeName, cachePath, serviceUri, symmAlgorithm";
         public const string ClientIsolatedStoreCallEncryptedCtorWithUri = "SyncScopeName, SyncScopeUri, symmAlgorithm";
@@ -94,6 +94,9 @@ namespace Microsoft.Synchronization.ClientServices
         public const string ClientOfflineEntityMetadataTypeName = "Microsoft.Synchronization.ClientServices.OfflineEntityMetadata";
         public const string ClientCachePathArgName = "cachePath";
         public const string ClientServiceUriArgName = "serviceUri";
+        public const string ClientServiceCookieContainerArgName = "cookieContainer";
+        public const string ClientServiceCookieContainerArgAttrOptional = "Optional";
+        public const string ClientServiceCookieContainerArgAttrDefaultParam = "DefaultParameterValue";
         public const string ClientSymmetricAlgorithmArgName = "symmAlgorithm";
         public const string SymmetricAlgorithmTypeName = "System.Security.Cryptography.SymmetricAlgorithm";
         public const string ClientEntityVariableName = "entity";
