@@ -397,16 +397,16 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                 var declValuePairs = columnsDcl.Zip(columnsValues, (col,val) => col+"="+val).ToArray();
                 var declValuePairsStr = string.Join(",", declValuePairs);
                 
-                string pkeysNames = String.Join(", ", map.PrimaryKeys.Select(column => column.Name));
 
                 // Creating queries
                 var queryInsert = String.Format(SQLiteConstants.InsertOrIgnoreFromChanges, map.TableName, decl, declValues);
-                var queryUpdate = String.Format(SQLiteConstants.UpdateOrIgnoreFromChanges, map.TableName, declValuePairsStr, pkeysNames);
+                var queryUpdate = String.Format(SQLiteConstants.UpdateOrIgnoreFromChanges, map.TableName, declValuePairsStr, map.GetPrimaryKeysWhereClause);
                 var queryUpdateTracking = String.Format(SQLiteConstants.InsertOrReplaceTrackingFromChanges, map.TableName, declTracking, declValuesTracking);
                 var queryDelete = String.Format(SQLiteConstants.DeleteFromChanges, map.TableName, map.GetPrimaryKeysWhereClause);
                 var queryDeleteTracking = String.Format(SQLiteConstants.DeleteTrackingFromChanges, map.TableName, map.GetPrimaryKeysWhereClause);
 
 
+                string pkeysNames = String.Join(", ", map.PrimaryKeys.Select(column => column.Name));
                 var querySelectItemPrimaryKeyFromTrackingChangesWithOemID =
                     String.Format(SQLiteConstants.SelectItemPrimaryKeyFromTrackingChangesWithOemID, map.TableName,
                                   pkeysNames);
@@ -486,7 +486,11 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                                     BindParameter(stmtUpdate, i + 1, val);
                                 }
                                 // add where clause
-                                BindParameter(stmtUpdate, cols.Length + 1, entity.ServiceMetadata.Id);
+                                for (var i = 0; i < map.PrimaryKeys.Length; i++)
+                                {
+                                    var val = map.PrimaryKeys[i].GetValue(entity);
+                                    BindParameter(stmtUpdate, cols.Length + i + 1,val);
+                                }
                                 stmtUpdate.Step();
                                 stmtUpdate.Reset();
                                 stmtUpdate.ClearBindings();

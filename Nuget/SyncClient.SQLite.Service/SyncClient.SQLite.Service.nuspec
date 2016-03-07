@@ -22,8 +22,8 @@
     </metadata>
     <files>
         <file src="..\..\server\Debug\Microsoft.Synchronization.Services.dll" target="lib\net35\Microsoft.Synchronization.Services.dll" />
-        <file src="tools\SyncSvcUtil.exe" target="tools\SyncSvcUtil.exe" />
-        <file src="tools\SyncSvcUtilUI.exe" target="tools\SyncSvcUtilUI.exe" />
-        <file src="tools\SyncSvcUtilUI.exe.config" target="tools\SyncSvcUtilUI.exe.config" />
+        <file src="..\..\tools\SyncSvcUtil.exe" target="tools\SyncSvcUtil.exe" />
+        <file src="..\..\tools\SyncSvcUtilUI.exe" target="tools\SyncSvcUtilUI.exe" />
+        <file src="..\..\tools\SyncSvcUtilUI.exe.config" target="tools\SyncSvcUtilUI.exe.config" />
     </files>
 </package>

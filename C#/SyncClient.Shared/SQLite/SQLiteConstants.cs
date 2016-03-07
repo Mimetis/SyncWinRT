@@ -107,7 +107,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         public static String UpdateOrIgnoreFromChanges =
             "Update OR IGNORE [{0}] set " +
             "{1} " +
-            "where {2} = ?";
+            "Where {2} ";
 
         /// <summary>
         /// {0} : TableName
