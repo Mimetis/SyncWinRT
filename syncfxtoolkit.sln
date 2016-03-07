@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncServiceLib", "C#\SyncServiceLib\SyncServiceLib.csproj", "{B1152373-5435-4344-A749-A083734B69DC}"
 EndProject
@@ -25,6 +25,7 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		C#\SyncClient.Shared\SyncClient.Shared.projitems*{936a4dec-06a7-46d3-9021-2e35ef46ec37}*SharedItemsImports = 13
 		C#\SyncClient.Shared\SyncClient.Shared.projitems*{a6fbdb08-b02c-403d-81da-aa2b2cd07a22}*SharedItemsImports = 4
+		C#\SyncClient.Shared\SyncClient.Shared.projitems*{9cea0db7-a4a3-4a9d-8b11-f7446a295f86}*SharedItemsImports = 4
 		C#\SyncClient.Shared\SyncClient.Shared.projitems*{e7596c6f-c4ec-4020-9c22-37edb4dbb8f3}*SharedItemsImports = 4
 		C#\SyncClient.Shared\SyncClient.Shared.projitems*{4c963fe8-f333-4828-8d75-9de234c03200}*SharedItemsImports = 4
 		C#\SyncClient.Shared\SyncClient.Shared.projitems*{10455072-1ed5-46ee-a52a-6095a7d4c8b6}*SharedItemsImports = 4
