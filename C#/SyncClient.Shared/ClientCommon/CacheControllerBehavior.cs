@@ -29,6 +29,7 @@ namespace Microsoft.Synchronization.ClientServices
             this._knownTypes = new List<Type>();
             this.serFormat = SerializationFormat.ODataAtom;
             this.scopeParameters = new Dictionary<string, string>();
+            this.customHeaders = new Dictionary<string, string>();
         }
 
         /// <summary>

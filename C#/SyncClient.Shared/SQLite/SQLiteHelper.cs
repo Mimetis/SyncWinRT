@@ -394,14 +394,19 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                 var declTracking = string.Join(",", columnsDclTracking.ToArray());
                 var declValuesTracking = string.Join(",", columnsValuesTracking.ToArray());
 
+                var declValuePairs = columnsDcl.Zip(columnsValues, (col,val) => col+"="+val).ToArray();
+                var declValuePairsStr = string.Join(",", declValuePairs);
+                
+
                 // Creating queries
-                var queryInsert = String.Format(SQLiteConstants.InsertOrReplaceFromChanges, map.TableName, decl, declValues);
+                var queryInsert = String.Format(SQLiteConstants.InsertOrIgnoreFromChanges, map.TableName, decl, declValues);
+                var queryUpdate = String.Format(SQLiteConstants.UpdateOrIgnoreFromChanges, map.TableName, declValuePairsStr, map.GetPrimaryKeysWhereClause);
                 var queryUpdateTracking = String.Format(SQLiteConstants.InsertOrReplaceTrackingFromChanges, map.TableName, declTracking, declValuesTracking);
                 var queryDelete = String.Format(SQLiteConstants.DeleteFromChanges, map.TableName, map.GetPrimaryKeysWhereClause);
                 var queryDeleteTracking = String.Format(SQLiteConstants.DeleteTrackingFromChanges, map.TableName, map.GetPrimaryKeysWhereClause);
 
-                string pkeysNames = String.Join(", ", map.PrimaryKeys.Select(column => column.Name));
 
+                string pkeysNames = String.Join(", ", map.PrimaryKeys.Select(column => column.Name));
                 var querySelectItemPrimaryKeyFromTrackingChangesWithOemID =
                     String.Format(SQLiteConstants.SelectItemPrimaryKeyFromTrackingChangesWithOemID, map.TableName,
                                   pkeysNames);
@@ -419,109 +424,116 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                     this.DisableTriggers(map, connection);
 
                     // Prepare commandsa
-                    var stmtInsert = connection.Prepare(queryInsert);
-                    var stmtGetprimaryKey = connection.Prepare(querySelectItemPrimaryKeyFromTrackingChangesWithOemID);
-                    var stmtDeleteItem = connection.Prepare(queryDelete);
-                    var stmtDeleteItemTracking = connection.Prepare(queryDeleteTracking);
-                    var stmtTracking = connection.Prepare(queryUpdateTracking);
-
-                    foreach (var entity in entities)
+                    using (var stmtInsert = connection.Prepare(queryInsert))
+                    using (var stmtUpdate = connection.Prepare(queryUpdate))
+                    using (var stmtGetprimaryKey = connection.Prepare(querySelectItemPrimaryKeyFromTrackingChangesWithOemID))
+                    using (var stmtDeleteItem = connection.Prepare(queryDelete))
+                    using (var stmtDeleteItemTracking = connection.Prepare(queryDeleteTracking))
+                    using (var stmtTracking = connection.Prepare(queryUpdateTracking))
                     {
-                        // Foreach entity check if it's a delete action or un insert/update action
-                        if (entity.ServiceMetadata.IsTombstone)
+                        foreach (var entity in entities)
                         {
-                            // Delete Action
-
-                            // Bind parameter
-                            BindParameter(stmtGetprimaryKey, 1, entity.ServiceMetadata.Id);
-
-                            // Store values of primaryKeys
-                            Object[] pkeys = new object[map.PrimaryKeys.Length];
-
-                            // While row is available (only 1 if it's good)
-                            while (stmtGetprimaryKey.Step() == SQLiteResult.ROW)
+                            // Foreach entity check if it's a delete action or un insert/update action
+                            if (entity.ServiceMetadata.IsTombstone)
                             {
+                                // Delete Action
+
+                                // Bind parameter
+                                BindParameter(stmtGetprimaryKey, 1, entity.ServiceMetadata.Id);
+
+                                // Store values of primaryKeys
+                                Object[] pkeys = new object[map.PrimaryKeys.Length];
+
+                                // While row is available (only 1 if it's good)
+                                while (stmtGetprimaryKey.Step() == SQLiteResult.ROW)
+                                {
+                                    for (int i = 0; i < pkeys.Length; i++)
+                                    {
+                                        // Read the column
+                                        pkeys[i] = ReadCol(stmtGetprimaryKey, i, map.PrimaryKeys[i].ColumnType);
+                                    }
+
+                                }
+                                stmtGetprimaryKey.Reset();
+
+                                // Bind parameters
                                 for (int i = 0; i < pkeys.Length; i++)
                                 {
-                                    // Read the column
-                                    pkeys[i] = ReadCol(stmtGetprimaryKey, i, map.PrimaryKeys[i].ColumnType);
+                                    BindParameter(stmtDeleteItem, i + 1, pkeys[i]);
+                                    BindParameter(stmtDeleteItemTracking, i + 1, pkeys[i]);
                                 }
 
-                            }
-                            stmtGetprimaryKey.Reset();
+                                // Execute the deletion of 2 rows
+                                stmtDeleteItem.Step();
+                                stmtDeleteItem.Reset();
+                                stmtDeleteItem.ClearBindings();
 
-                            // Bind parameters
-                            for (int i = 0; i < pkeys.Length; i++)
+                                stmtDeleteItemTracking.Step();
+                                stmtDeleteItemTracking.Reset();
+                                stmtDeleteItemTracking.ClearBindings();
+
+                            }
+                            else
                             {
-                                BindParameter(stmtDeleteItem, i + 1, pkeys[i]);
-                                BindParameter(stmtDeleteItemTracking, i + 1, pkeys[i]);
+                                // Get columns for insert
+                                var cols = map.Columns;
+
+                                // Set values for table
+                                for (var i = 0; i < cols.Length; i++)
+                                {
+                                    var val = cols[i].GetValue(entity);
+                                    BindParameter(stmtInsert, i + 1, val);
+                                    BindParameter(stmtUpdate, i + 1, val);
+                                }
+                                // add where clause
+                                for (var i = 0; i < map.PrimaryKeys.Length; i++)
+                                {
+                                    var val = map.PrimaryKeys[i].GetValue(entity);
+                                    BindParameter(stmtUpdate, cols.Length + i + 1,val);
+                                }
+                                stmtUpdate.Step();
+                                stmtUpdate.Reset();
+                                stmtUpdate.ClearBindings();
+
+                                stmtInsert.Step();
+                                stmtInsert.Reset();
+                                stmtInsert.ClearBindings();
+
+                                // Set Values for tracking table
+                                BindParameter(stmtTracking, 1, entity.ServiceMetadata.IsTombstone);
+                                BindParameter(stmtTracking, 2, 0);
+                                BindParameter(stmtTracking, 3, entity.ServiceMetadata.Id);
+                                BindParameter(stmtTracking, 4, "ETag");
+
+                                var editUri = String.Empty;
+                                if (entity.ServiceMetadata.EditUri != null &&
+                                    entity.ServiceMetadata.EditUri.IsAbsoluteUri)
+                                    editUri = entity.ServiceMetadata.EditUri.AbsoluteUri;
+
+                                BindParameter(stmtTracking, 5, editUri);
+                                BindParameter(stmtTracking, 6, DateTime.UtcNow);
+
+                                // Set values for tracking table
+                                for (var i = 0; i < map.PrimaryKeys.Length; i++)
+                                {
+                                    var val = map.PrimaryKeys[i].GetValue(entity);
+                                    BindParameter(stmtTracking, i + 7, val);
+                                }
+
+                                stmtTracking.Step();
+                                stmtTracking.Reset();
+                                stmtTracking.ClearBindings();
+
                             }
-
-                            // Execute the deletion of 2 rows
-                            stmtDeleteItem.Step();
-                            stmtDeleteItem.Reset();
-                            stmtDeleteItem.ClearBindings();
-
-                            stmtDeleteItemTracking.Step();
-                            stmtDeleteItemTracking.Reset();
-                            stmtDeleteItemTracking.ClearBindings();
 
                         }
-                        else
+
+
+                        using (var statement = connection.Prepare("Commit Transaction"))
                         {
-                            // Get columns for insert
-                            var cols = map.Columns;
-
-                            // Set values for table
-                            for (var i = 0; i < cols.Length; i++)
-                            {
-                                var val = cols[i].GetValue(entity);
-                                BindParameter(stmtInsert, i + 1, val);
-                            }
-
-                            stmtInsert.Step();
-                            stmtInsert.Reset();
-                            stmtInsert.ClearBindings();
-
-                            // Set Values for tracking table
-                            BindParameter(stmtTracking, 1, entity.ServiceMetadata.IsTombstone);
-                            BindParameter(stmtTracking, 2, 0);
-                            BindParameter(stmtTracking, 3, entity.ServiceMetadata.Id);
-                            BindParameter(stmtTracking, 4, "ETag");
-
-                            var editUri = String.Empty;
-                            if (entity.ServiceMetadata.EditUri != null && entity.ServiceMetadata.EditUri.IsAbsoluteUri)
-                                editUri = entity.ServiceMetadata.EditUri.AbsoluteUri;
-
-                            BindParameter(stmtTracking, 5, editUri);
-                            BindParameter(stmtTracking, 6, DateTime.UtcNow);
-
-                            // Set values for tracking table
-                            for (var i = 0; i < map.PrimaryKeys.Length; i++)
-                            {
-                                var val = map.PrimaryKeys[i].GetValue(entity);
-                                BindParameter(stmtTracking, i + 7, val);
-                            }
-
-                            stmtTracking.Step();
-                            stmtTracking.Reset();
-                            stmtTracking.ClearBindings();
-
+                            statement.Step();
                         }
-
                     }
-
-
-                    using (var statement = connection.Prepare("Commit Transaction"))
-                    {
-                        statement.Step();
-                    }
-
-                    stmtDeleteItem.Dispose();
-                    stmtDeleteItemTracking.Dispose();
-                    stmtGetprimaryKey.Dispose();
-                    stmtInsert.Dispose();
-                    stmtTracking.Dispose();
 
 
                 }

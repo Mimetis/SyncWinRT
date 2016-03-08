@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -152,23 +153,23 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         /// </summary>
         /// <param name="schema">The OfflineSchema that specifies the set of the collections.</param>
         /// <param name="scopeName">The scope name used to identify the scope on the service.</param>
-        /// <param name="datbaseName">Name of the database used to store entities.</param>
+        /// <param name="databasePath">Name of the database used to store entities.</param>
         /// <param name="uri">Uri of the scope.  Used to intialize the CacheController.</param>
         /// <remarks>
         /// If the Uri specified is different from the one that is stored in the cache path, the
         /// Load method will throw an InvalidOperationException.
         /// 1/11/2015 Added an optional parameter to allow setting cookies
         /// </remarks>
-        public SQLiteContext(OfflineSchema schema, string scopeName, string datbaseName, Uri uri, CookieContainer cookieContainer = null)
+        public SQLiteContext(OfflineSchema schema, string scopeName, string databasePath, Uri uri, CookieContainer cookieContainer = null)
         {
             if (schema == null)
-                throw new ArgumentNullException("OfflineSchema");
+                throw new ArgumentNullException("schema");
 
             if (string.IsNullOrEmpty(scopeName))
                 throw new ArgumentNullException("scopeName");
 
-            if (string.IsNullOrEmpty(datbaseName))
-                throw new ArgumentNullException("cachePath");
+            if (string.IsNullOrEmpty(databasePath))
+                throw new ArgumentNullException("databasePath");
 
             if (uri == null)
                 throw new ArgumentNullException("uri");
@@ -177,21 +178,35 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             this.schema = schema;
             this.scopeUri = uri;
             this.scopeName = scopeName;
-            this.databaseName = datbaseName;
             // set cookiecontainer
             this.cookieContainer = cookieContainer;
+            this.databaseName = databasePath;
 
+            bool isPath = databasePath.Contains('/') || databasePath.Contains('\\');
+            string localPath = databaseName;
+
+            // allow to explicitly specify full path - relevant e.g. for unittests
+            if (isPath)
+            {
+                this.databaseName = Path.GetFileName(databaseName);
+            }
+            else
+            {
 #if ( WINDOWS_PHONE || NETFX_CORE) 
-            var localPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, databaseName);
+            localPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, databaseName);
 #elif (__ANDROID__)
-            var localPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), databaseName);
+            localPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), databaseName);
+#elif (NET)
+            localPath = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), databaseName);
 #elif (__IOS__)
             // we need to put in /Library/ on iOS5.1 to meet Apple's iCloud terms
             // (they don't want non-user-generated data in Documents)
-            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal); // Documents folder
+                string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                    // Documents folder
             string libraryPath = Path.Combine(documentsPath, "..", "Library");
-            var localPath = Path.Combine(libraryPath, databaseName);
+                localPath = Path.Combine(libraryPath, databaseName);
 #endif
+            }
 
             this.Manager = new SQLiteManager(schema, localPath);
             this.CreateCacheController();

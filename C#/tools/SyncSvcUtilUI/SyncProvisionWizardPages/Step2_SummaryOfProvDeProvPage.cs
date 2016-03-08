@@ -47,7 +47,12 @@ namespace SyncSvcUtilUI.SyncProvisionWizardPages
             tArgs.Add("/scopeconfig:" +  WizardHelper.Instance.ProvisioningWizardHelper[WizardHelper.CONFIG_FILE_NAME]);
             tArgs.Add("/mode:" + WizardHelper.Instance.ProvisioningWizardHelper[WizardHelper.SELECTED_PROV_MODE]);
             tArgs.Add("/scopename:" + WizardHelper.Instance.ProvisioningWizardHelper[WizardHelper.SELECTED_CONFIG_NAME]);
-       
+
+            if (WizardHelper.Instance.CodeGenWizardHelper.ContainsKey(WizardHelper.CODEGEN_OUTDIRECTORY))
+            {
+                tArgs.Add("/directory:" + WizardHelper.Instance.CodeGenWizardHelper[WizardHelper.CODEGEN_OUTDIRECTORY]);
+            }
+
             try
             {
 

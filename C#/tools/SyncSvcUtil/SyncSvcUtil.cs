@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using Microsoft.Synchronization.ClientServices.CodeDom;
 using Microsoft.Synchronization.ClientServices.Configuration;
@@ -140,131 +141,22 @@ namespace Microsoft.Synchronization.ClientServices
             {
 
                 case OperationMode.Provision:
-                    try
-                    {
-
-
-                        SqlSyncScopeProvisioning prov = new SqlSyncScopeProvisioning(new SqlConnection(selectedConfig.SelectedTargetDatabase.GetConnectionString()),
-                                            scopeDescription, selectedConfig.SelectedSyncScope.IsTemplateScope ? SqlSyncScopeProvisioningType.Template : SqlSyncScopeProvisioningType.Scope);
-
-                        // Note: Deprovisioning does not work because of a bug in the provider when you set the ObjectSchema property to “dbo”. 
-                        // The workaround is to not set the property (it internally assumes dbo in this case) so that things work on deprovisioning.
-                        if (!String.IsNullOrEmpty(selectedConfig.SelectedSyncScope.SchemaName))
-                        {
-                            prov.ObjectSchema = selectedConfig.SelectedSyncScope.SchemaName;
-                        }
-
-                        foreach (SyncTableConfigElement tableElement in selectedConfig.SelectedSyncScope.SyncTables)
-                        {
-                            // Check and set the SchemaName for individual table if specified
-                            if (!string.IsNullOrEmpty(tableElement.SchemaName))
-                            {
-                                prov.Tables[tableElement.GlobalName].ObjectSchema = tableElement.SchemaName;
-                            }
-
-                            prov.Tables[tableElement.GlobalName].FilterClause = tableElement.FilterClause;
-                            foreach (FilterColumnConfigElement filterCol in tableElement.FilterColumns)
-                            {
-                                prov.Tables[tableElement.GlobalName].FilterColumns.Add(scopeDescription.Tables[tableElement.GlobalName].Columns[filterCol.Name]);
-                            }
-                            foreach (FilterParameterConfigElement filterParam in tableElement.FilterParameters)
-                            {
-                                CheckFilterParamTypeAndSize(filterParam);
-                                prov.Tables[tableElement.GlobalName].FilterParameters.Add(new SqlParameter(filterParam.Name, (SqlDbType)Enum.Parse(typeof(SqlDbType), filterParam.SqlType, true)));
-                                prov.Tables[tableElement.GlobalName].FilterParameters[filterParam.Name].Size = filterParam.DataSize;
-                            }
-                        }
-
-                        // enable bulk procedures.
-                        prov.SetUseBulkProceduresDefault(selectedConfig.SelectedSyncScope.EnableBulkApplyProcedures);
-
-                        // Create a new set of enumeration stored procs per scope. 
-                        // Without this multiple scopes share the same stored procedure which is not desirable.
-                        prov.SetCreateProceduresForAdditionalScopeDefault(DbSyncCreationOption.Create);
-
-                        if (selectedConfig.SelectedSyncScope.IsTemplateScope)
-                        {
-                            if (!prov.TemplateExists(selectedConfig.SelectedSyncScope.Name))
-                            {
-                                Log("Provisioning Database {0} for template scope {1}...", selectedConfig.SelectedTargetDatabase.Name, selectedConfig.SelectedSyncScope.Name);
-                                prov.Apply();
-                            }
-                            else
-                            {
-                                throw new InvalidOperationException(string.Format("Database {0} already contains a template scope {1}. Please deprovision the scope and retry.", selectedConfig.SelectedTargetDatabase.Name,
-                                    selectedConfig.SelectedSyncScope.Name));
-                            }
-                        }
-                        else
-                        {
-                            if (!prov.ScopeExists(selectedConfig.SelectedSyncScope.Name))
-                            {
-                                Log("Provisioning Database {0} for scope {1}...", selectedConfig.SelectedTargetDatabase.Name, selectedConfig.SelectedSyncScope.Name);
-                                prov.Apply();
-                            }
-                            else
-                            {
-                                throw new InvalidOperationException(string.Format("Database {0} already contains a scope {1}. Please deprovision the scope and retry.", selectedConfig.SelectedTargetDatabase.Name,
-                                    selectedConfig.SelectedSyncScope.Name));
-                            }
-                        }
-                    }
-                    catch (ConfigurationErrorsException)
-                    {
-                        throw;
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        throw;
-                    }
-                    catch (Exception e)
-                    {
-                        throw new InvalidOperationException("Unexpected error when executing the Provisioning command. See inner exception for details.", e);
-                    }
+                    Provision(selectedConfig, scopeDescription, false, parser.WorkingDirectory);
+                    break;
+                case OperationMode.ProvisionScript:
+                    Provision(selectedConfig, scopeDescription, true, parser.WorkingDirectory);
                     break;
                 case OperationMode.Deprovision:
-                    try
-                    {
-                        SqlSyncScopeDeprovisioning deprov = new SqlSyncScopeDeprovisioning(new SqlConnection(selectedConfig.SelectedTargetDatabase.GetConnectionString()));
-
-                        // Set the ObjectSchema property.
-                        if (!String.IsNullOrEmpty(selectedConfig.SelectedSyncScope.SchemaName))
-                        {
-                            deprov.ObjectSchema = selectedConfig.SelectedSyncScope.SchemaName;
-                        }
-
-                        Log("Deprovisioning Database {0} for scope {1}...", selectedConfig.SelectedTargetDatabase.Name, selectedConfig.SelectedSyncScope.Name);
-
-                        if (selectedConfig.SelectedSyncScope.IsTemplateScope)
-                        {
-                            deprov.DeprovisionTemplate(selectedConfig.SelectedSyncScope.Name);
-                        }
-                        else
-                        {
-                            deprov.DeprovisionScope(selectedConfig.SelectedSyncScope.Name);
-
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        throw new InvalidOperationException("Unexpected error when executing the Deprovisioning command. See inner exception for details.", e);
-                    }
-
+                    Deprovision(selectedConfig, false, parser.WorkingDirectory);
+                    break;
+                case OperationMode.DeprovisionScript:
+                    Deprovision(selectedConfig, true, parser.WorkingDirectory);
                     break;
                 case OperationMode.Deprovisionstore:
-                    try
-                    {
-                        SqlSyncScopeDeprovisioning deprov = new SqlSyncScopeDeprovisioning(new SqlConnection(selectedConfig.SelectedTargetDatabase.GetConnectionString()));
-
-                        Log("Deprovisioning Store Database {0} ...", selectedConfig.SelectedTargetDatabase.Name);
-
-                        deprov.DeprovisionStore();
-                    }
-                    catch (Exception e)
-                    {
-                        throw new InvalidOperationException("Unexpected error when executing the Deprovisioning command. See inner exception for details.", e);
-                    }
-
+                    DeprovisionStore(selectedConfig, false, parser.WorkingDirectory);
+                    break;
+                case OperationMode.DeprovisionstoreScript:
+                    DeprovisionStore(selectedConfig, true, parser.WorkingDirectory);
                     break;
                 case OperationMode.Codegen:
                     Log("Generating files...");
@@ -278,6 +170,209 @@ namespace Microsoft.Synchronization.ClientServices
                 default:
                     break;
             }
+        }
+
+        private static void Provision(SelectedConfigSections selectedConfig, DbSyncScopeDescription scopeDescription, bool script, DirectoryInfo workingDirectory)
+        {
+            try
+            {
+                SqlSyncScopeProvisioning prov =
+                    new SqlSyncScopeProvisioning(new SqlConnection(selectedConfig.SelectedTargetDatabase.GetConnectionString()),
+                        scopeDescription,
+                        selectedConfig.SelectedSyncScope.IsTemplateScope
+                            ? SqlSyncScopeProvisioningType.Template
+                            : SqlSyncScopeProvisioningType.Scope);
+
+                // Note: Deprovisioning does not work because of a bug in the provider when you set the ObjectSchema property to “dbo”. 
+                // The workaround is to not set the property (it internally assumes dbo in this case) so that things work on deprovisioning.
+                if (!String.IsNullOrEmpty(selectedConfig.SelectedSyncScope.SchemaName))
+                {
+                    prov.ObjectSchema = selectedConfig.SelectedSyncScope.SchemaName;
+                }
+
+                foreach (SyncTableConfigElement tableElement in selectedConfig.SelectedSyncScope.SyncTables)
+                {
+                    // Check and set the SchemaName for individual table if specified
+                    if (!string.IsNullOrEmpty(tableElement.SchemaName))
+                    {
+                        prov.Tables[tableElement.GlobalName].ObjectSchema = tableElement.SchemaName;
+                    }
+
+                    prov.Tables[tableElement.GlobalName].FilterClause = tableElement.FilterClause;
+                    foreach (FilterColumnConfigElement filterCol in tableElement.FilterColumns)
+                    {
+                        prov.Tables[tableElement.GlobalName].FilterColumns.Add(
+                            scopeDescription.Tables[tableElement.GlobalName].Columns[filterCol.Name]);
+                    }
+                    foreach (FilterParameterConfigElement filterParam in tableElement.FilterParameters)
+                    {
+                        CheckFilterParamTypeAndSize(filterParam);
+                        prov.Tables[tableElement.GlobalName].FilterParameters.Add(new SqlParameter(filterParam.Name,
+                            (SqlDbType) Enum.Parse(typeof (SqlDbType), filterParam.SqlType, true)));
+                        prov.Tables[tableElement.GlobalName].FilterParameters[filterParam.Name].Size = filterParam.DataSize;
+                    }
+                }
+
+                // enable bulk procedures.
+                prov.SetUseBulkProceduresDefault(selectedConfig.SelectedSyncScope.EnableBulkApplyProcedures);
+
+                // Create a new set of enumeration stored procs per scope. 
+                // Without this multiple scopes share the same stored procedure which is not desirable.
+                prov.SetCreateProceduresForAdditionalScopeDefault(DbSyncCreationOption.Create);
+
+                if (selectedConfig.SelectedSyncScope.IsTemplateScope)
+                {
+                    if (!script)
+                    {
+                        if (!prov.TemplateExists(selectedConfig.SelectedSyncScope.Name))
+                        {
+                            Log("Provisioning Database {0} for template scope {1}...",
+                                selectedConfig.SelectedTargetDatabase.Name,
+                                selectedConfig.SelectedSyncScope.Name);
+                            prov.Apply();
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException(
+                                string.Format(
+                                    "Database {0} already contains a template scope {1}. Please deprovision the scope and retry.",
+                                    selectedConfig.SelectedTargetDatabase.Name,
+                                    selectedConfig.SelectedSyncScope.Name));
+                        }
+                    }
+                    else
+                    {
+                        SaveScript("provision.sql", prov.Script(), workingDirectory);
+                    }
+                }
+                else
+                {
+                    if (!script)
+                    {
+                        if (!prov.ScopeExists(selectedConfig.SelectedSyncScope.Name))
+                        {
+                            Log("Provisioning Database {0} for scope {1}...", selectedConfig.SelectedTargetDatabase.Name,
+                                selectedConfig.SelectedSyncScope.Name);
+
+
+                            prov.Apply();
+
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException(
+                                string.Format(
+                                    "Database {0} already contains a scope {1}. Please deprovision the scope and retry.",
+                                    selectedConfig.SelectedTargetDatabase.Name,
+                                    selectedConfig.SelectedSyncScope.Name));
+                        }
+                    }
+                    else
+                    {
+                        SaveScript("provision.sql", prov.Script(), workingDirectory);
+                    }
+                }
+            }
+            catch (ConfigurationErrorsException)
+            {
+                throw;
+            }
+            catch (InvalidOperationException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(
+                    "Unexpected error when executing the Provisioning command. See inner exception for details.", e);
+            }
+        }
+
+        private static void Deprovision(SelectedConfigSections selectedConfig, bool script, DirectoryInfo workingDirectory)
+        {
+            try
+            {
+                SqlSyncScopeDeprovisioning deprov =
+                    new SqlSyncScopeDeprovisioning(new SqlConnection(selectedConfig.SelectedTargetDatabase.GetConnectionString()));
+
+                // Set the ObjectSchema property.
+                if (!String.IsNullOrEmpty(selectedConfig.SelectedSyncScope.SchemaName))
+                {
+                    deprov.ObjectSchema = selectedConfig.SelectedSyncScope.SchemaName;
+                }
+
+                Log("Deprovisioning Database {0} for scope {1}...", selectedConfig.SelectedTargetDatabase.Name,
+                    selectedConfig.SelectedSyncScope.Name);
+
+                if (selectedConfig.SelectedSyncScope.IsTemplateScope)
+                {
+                    if (!script)
+                    {
+                        deprov.DeprovisionTemplate(selectedConfig.SelectedSyncScope.Name);
+                    }
+                    else
+                    {
+                        SaveScript("deprovision.sql", deprov.ScriptDeprovisionTemplate(selectedConfig.SelectedSyncScope.Name), workingDirectory);
+                    }
+                }
+                else
+                {
+                    if (!script)
+                    {
+                        deprov.DeprovisionScope(selectedConfig.SelectedSyncScope.Name);
+                    }
+                    else
+                    {
+                        SaveScript("deprovision.sql", deprov.ScriptDeprovisionScope(selectedConfig.SelectedSyncScope.Name), workingDirectory);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(
+                    "Unexpected error when executing the Deprovisioning command. See inner exception for details.", e);
+            }
+        }
+
+        private static void DeprovisionStore(SelectedConfigSections selectedConfig, bool script, DirectoryInfo workingDirectory)
+        {
+            try
+            {
+                SqlSyncScopeDeprovisioning deprov =
+                    new SqlSyncScopeDeprovisioning(new SqlConnection(selectedConfig.SelectedTargetDatabase.GetConnectionString()));
+
+                Log("Deprovisioning Store Database {0} ...", selectedConfig.SelectedTargetDatabase.Name);
+
+                if (!script)
+                {
+                    deprov.DeprovisionStore();
+                }
+                else
+                {
+                    SaveScript("deprovisionstore.sql", deprov.ScriptDeprovisionStore(), workingDirectory);
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(
+                    "Unexpected error when executing the Deprovisioning command. See inner exception for details.", e);
+            }
+        }
+
+        private static void SaveScript(string fileName, string sql, DirectoryInfo workingDirectory)
+        {
+            var path = Path.Combine(workingDirectory.FullName, fileName);
+            if (File.Exists(path))
+            {
+                Log("The file '{0}' already exists and will be deleted...", path);
+                File.Delete(path);
+            }
+
+            File.WriteAllText(path, sql);
+
+            Log("Wrote file to '{0}'", path);
         }
 
         private static Dictionary<string, Dictionary<string, string>> BuildColumnMappingInfo(SelectedConfigSections selectedConfig)

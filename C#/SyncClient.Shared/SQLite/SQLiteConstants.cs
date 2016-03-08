@@ -88,7 +88,27 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             "VALUES " +
             "({2}) ";
 
-        
+        /// <summary>
+        /// {0} : TableName
+        /// {1} : Columns list
+        /// {2} : Values
+        /// </summary>
+        public static String InsertOrIgnoreFromChanges =
+            "INSERT OR IGNORE INTO [{0}]  " +
+            "({1}) " +
+            "VALUES " +
+            "({2}) ";
+
+        /// <summary>
+        /// {0} : TableName
+        /// {1} : Columns list
+        /// {2} : Values
+        /// </summary>
+        public static String UpdateOrIgnoreFromChanges =
+            "Update OR IGNORE [{0}] set " +
+            "{1} " +
+            "Where {2} ";
+
         /// <summary>
         /// {0} : TableName
         /// {1} : Primary Key Name
