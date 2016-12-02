@@ -160,3 +160,5 @@ $RECYCLE.BIN/
 C#/SyncClient.Windows81/SyncClient.Windows8.csproj
 C#/WinRTClient/packages.config
 /packages/SQLitePCL.3.8.5.1
+/Nuget/SyncClient.SQLite/lib
+/Tools

@@ -49,8 +49,6 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             this.sqliteHelper = new SQLiteHelper(this.localFilePath, this);
         }
 
-
-
         public TableMapping GetMapping<T>()
         {
             return GetMapping(typeof(T));
@@ -70,7 +68,6 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             }
             return map;
         }
-
    
         internal bool ScopeTableExist()
         {
@@ -98,8 +95,6 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
 
         }
 
-        
-
         /// <summary>
         /// Create Table
         /// </summary>
@@ -107,7 +102,6 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         {
             this.sqliteHelper.CreateTable(table);
         }
-
 
         /// <summary>
         /// Create the scope info table
@@ -288,14 +282,26 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         }
 
         /// <summary>
+        /// Returns the number of changes that exist currently
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="lastSyncDate"></param>
+        /// <returns></returns>
+        internal long GetChangeCount(Guid state, DateTime lastSyncDate)
+        {
+            return this.sqliteHelper.GetChangeCount(this.schema, lastSyncDate);
+        }
+
+        /// <summary>
         /// Get Change
         /// </summary>
         /// <param name="state">A Guid made to identify the sync process uniquely</param>
         /// <param name="lastSyncDate">Last Sync Date </param>
+        /// <param name="uploadBatchSize"></param>
         /// <returns></returns>
-        internal IEnumerable<IOfflineEntity> GetChanges(Guid state, DateTime lastSyncDate)
+        internal IEnumerable<IOfflineEntity> GetChanges(Guid state, DateTime lastSyncDate, int uploadBatchSize)
         {
-            IEnumerable<SQLiteOfflineEntity> getChanges = this.sqliteHelper.GetChanges(this.schema, lastSyncDate);
+            IEnumerable<SQLiteOfflineEntity> getChanges = this.sqliteHelper.GetChanges(this.schema, lastSyncDate, uploadBatchSize);
 
             // Save all the Reference. 
             // If there is a problem, rollback all informations on thoses Entities
@@ -364,8 +370,6 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             foreach (var groupedEntities in @group)
                 this.sqliteHelper.MergeEntities(groupedEntities.Type, groupedEntities.Entities.ToList());
         }
-
-
     }
 
     public class TableMapping
@@ -700,5 +704,4 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             return DefaultMaxStringLength;
         }
     }
-
 }
