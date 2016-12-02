@@ -310,7 +310,8 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                  var lastSyncDate = Configuration.LastSyncDate;
 
                  // get the number of changes
-                 var localChangeCount = Manager.GetChangeCount(state, lastSyncDate);
+                 bool uploadBatchingEnabled = this.uploadBatchSize > 0;
+                 var localChangeCount = uploadBatchingEnabled ? Manager.GetChangeCount(state, lastSyncDate) : 0;
 
                  // Get the changes from the storage layer (not the in-memory data that can change)
                  var changes = Manager.GetChanges(state, lastSyncDate, this.uploadBatchSize).ToList();
