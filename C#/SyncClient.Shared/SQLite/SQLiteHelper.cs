@@ -554,11 +554,71 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         }
 
         /// <summary>
+        /// Get total number of changes of sqlite database
+        /// </summary>
+        /// <param name="schema">All Tables</param>
+        /// <param name="lastModifiedDate">Changes since this date</param>
+        internal long GetChangeCount(OfflineSchema schema, DateTime lastModifiedDate)
+        {
+            long totalCount = 0;
+
+            using (SQLiteConnection connection = new SQLiteConnection(localFilePath))
+            {
+                try
+                {
+                    foreach (var ty in schema.Collections)
+                    {
+                        // Get mapping from my type
+                        var map = manager.GetMapping(ty);
+
+                        // Create query to select changes 
+                        var querySelect = SQLiteConstants.SelectChangeCount;
+
+                        querySelect = String.Format(querySelect, map.TableName);
+
+
+                        // Prepare command
+                        using (var stmt = connection.Prepare(querySelect))
+                        {
+                            try
+                            {
+                                // Set Values
+                                BindParameter(stmt, 1, lastModifiedDate);
+
+                                stmt.Step();
+
+                                var count = stmt.GetInteger(0);
+
+                                Debug.WriteLine($"Table {map.TableName} has {count} changes");
+
+                                totalCount += count;
+                            }
+                            finally
+                            {
+                                stmt.Reset();
+                                stmt.ClearBindings();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    throw;
+                }
+            }
+            Debug.WriteLine($"Total change count: {totalCount}");
+
+            return totalCount;
+        }
+
+        /// <summary>
         /// Get all changes fro SQLite Database
         /// </summary>
         /// <param name="schema">All Tables</param>
         /// <param name="lastModifiedDate">Changes since this date</param>
-        internal IEnumerable<SQLiteOfflineEntity> GetChanges(OfflineSchema schema, DateTime lastModifiedDate)
+        /// <param name="uploadBatchSize">Maximum number of rows to upload</param>
+        internal IEnumerable<SQLiteOfflineEntity> GetChanges(OfflineSchema schema, DateTime lastModifiedDate, int uploadBatchSize)
         {
             List<SQLiteOfflineEntity> lstChanges = new List<SQLiteOfflineEntity>();
 
@@ -596,6 +656,10 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                         var decl = string.Join(",\n", columnsDcl.ToArray());
                         var pk = string.Join(" \nAND ", columnsPK.ToArray());
                         querySelect = String.Format(querySelect, map.TableName, pk, decl);
+
+                        // add limit if specified
+                        if (uploadBatchSize > 0)
+                            querySelect += $" LIMIT {uploadBatchSize}";
 
                         // Prepare command
                         using (var stmt = connection.Prepare(querySelect))
@@ -662,6 +726,9 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                             }
                         }
 
+                        // if we are batching uploads and the upload rowcount has been reached, skip
+                        if (uploadBatchSize > 0 && lstChanges.Count >= uploadBatchSize)
+                            break;
                     }
                 }
                 catch (Exception ex)
@@ -671,6 +738,11 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                 }
 
             }
+
+            // if we are batching uploads, limit the in-memory result set as well
+            if (uploadBatchSize > 0)
+                return lstChanges.Take(uploadBatchSize);
+
             return lstChanges;
         }
 

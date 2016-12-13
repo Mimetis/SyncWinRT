@@ -205,8 +205,6 @@ namespace Microsoft.Synchronization.ClientServices
                                                                         CancellationToken cancellationToken,
                                                                         IProgress<SyncProgressEvent> progress = null)
         {
-            this.changeSetId = Guid.NewGuid();
-
             try
             {
                 // Check if cancellation has occured
@@ -215,42 +213,49 @@ namespace Microsoft.Synchronization.ClientServices
 
                 // Get Changes
                 DateTime durationStartDate = DateTime.Now;
-                ChangeSet changeSet = await this.localProvider.GetChangeSet(this.changeSetId);
 
-                // Reporting progress after get changes from local store
-                if (progress != null)
-                    progress.Report(new SyncProgressEvent(SyncStage.GetChanges, DateTime.Now.Subtract(durationStartDate), true, (changeSet != null ? changeSet.Data : null)));
+                Boolean isLastBatch = false;
 
-
-                // No data to upload. Skip upload phase.
-                if (changeSet == null || changeSet.Data == null || changeSet.Data.Count == 0)
-                    return statistics;
-
-                // Create a SyncRequest out of this.
-                CacheRequest request = new CacheRequest
+                while (!isLastBatch)
                 {
-                    RequestId = this.changeSetId,
-                    Format = this.ControllerBehavior.SerializationFormat,
-                    RequestType = CacheRequestType.UploadChanges,
-                    Changes = changeSet.Data,
-                    KnowledgeBlob = changeSet.ServerBlob,
-                    IsLastBatch = changeSet.IsLastBatch
-                };
+                    this.changeSetId = Guid.NewGuid();
+                    ChangeSet changeSet = await this.localProvider.GetChangeSet(this.changeSetId);
+
+                    // Reporting progress after get changes from local store
+                    if (progress != null)
+                        progress.Report(new SyncProgressEvent(SyncStage.GetChanges, DateTime.Now.Subtract(durationStartDate), true, (changeSet != null ? changeSet.Data : null)));
+
+                    // No data to upload. Skip upload phase.
+                    if (changeSet == null || changeSet.Data == null || changeSet.Data.Count == 0)
+                        return statistics;
+
+                    isLastBatch = changeSet.IsLastBatch;
+
+                    // Create a SyncRequest out of this.
+                    CacheRequest request = new CacheRequest
+                    {
+                        RequestId = this.changeSetId,
+                        Format = this.ControllerBehavior.SerializationFormat,
+                        RequestType = CacheRequestType.UploadChanges,
+                        Changes = changeSet.Data,
+                        KnowledgeBlob = changeSet.ServerBlob,
+                        IsLastBatch = changeSet.IsLastBatch
+                    };
 
 
-                // Upload changes to server
-                durationStartDate = DateTime.Now;
-                var requestResult = await this.cacheRequestHandler.ProcessCacheRequestAsync(
-                    request, changeSet.IsLastBatch, cancellationToken);
+                    // Upload changes to server
+                    durationStartDate = DateTime.Now;
+                    var requestResult = await this.cacheRequestHandler.ProcessCacheRequestAsync(
+                        request, changeSet.IsLastBatch, cancellationToken);
 
-                // Get response from server if mb any conflicts or updated items
-                statistics = await this.ProcessCacheRequestResults(statistics, requestResult, cancellationToken);
+                    // Get response from server if mb any conflicts or updated items
+                    statistics = await this.ProcessCacheRequestResults(statistics, requestResult, cancellationToken);
 
-                // Reporting progress after uploading changes, and mb get back Conflicts and new Id from insterted items
-                if (progress != null)
-                    progress.Report(new SyncProgressEvent(SyncStage.UploadingChanges, DateTime.Now.Subtract(durationStartDate), true,
-                                                            changeSet.Data, requestResult.ChangeSetResponse.Conflicts, requestResult.ChangeSetResponse.UpdatedItems));
-
+                    // Reporting progress after uploading changes, and mb get back Conflicts and new Id from insterted items
+                    if (progress != null)
+                        progress.Report(new SyncProgressEvent(SyncStage.UploadingChanges, DateTime.Now.Subtract(durationStartDate), true,
+                                                                changeSet.Data, requestResult.ChangeSetResponse.Conflicts, requestResult.ChangeSetResponse.UpdatedItems));
+                }
             }
             catch (OperationCanceledException)
             {

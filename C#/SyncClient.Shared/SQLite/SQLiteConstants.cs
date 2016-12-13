@@ -79,6 +79,15 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
 
         /// <summary>
         /// {0} : TableName
+        /// </summary>
+        public static String SelectChangeCount = 
+            "SELECT COUNT(*) from [{0}_tracking] t" + Environment.NewLine +
+            "Where (t.Oem_IsTombStone = 1  " + Environment.NewLine +
+            "OR t.Oem_IsDirty = 1 )  " + Environment.NewLine +
+            "And t.Oem_LastModifiedDate > ?";
+
+        /// <summary>
+        /// {0} : TableName
         /// {1} : Columns list
         /// {2} : Values
         /// </summary>

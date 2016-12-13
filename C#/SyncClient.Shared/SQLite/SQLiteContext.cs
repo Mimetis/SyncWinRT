@@ -67,6 +67,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         /// </summary>
         private bool isDisposed;
         private System.Net.CookieContainer cookieContainer;
+        private readonly int uploadBatchSize;
 
         /// <summary>
         /// Used to detect if this is the first sync to the server.
@@ -155,12 +156,14 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         /// <param name="scopeName">The scope name used to identify the scope on the service.</param>
         /// <param name="databasePath">Name of the database used to store entities.</param>
         /// <param name="uri">Uri of the scope.  Used to intialize the CacheController.</param>
+        /// <param name="cookieContainer"></param>
+        /// <param name="uploadBatchSize">If set, determines that the upload should be batched and the maximum number of rows to send in one batch (row count - not KB!)</param>
         /// <remarks>
         /// If the Uri specified is different from the one that is stored in the cache path, the
         /// Load method will throw an InvalidOperationException.
         /// 1/11/2015 Added an optional parameter to allow setting cookies
         /// </remarks>
-        public SQLiteContext(OfflineSchema schema, string scopeName, string databasePath, Uri uri, CookieContainer cookieContainer = null)
+        public SQLiteContext(OfflineSchema schema, string scopeName, string databasePath, Uri uri, CookieContainer cookieContainer = null, int uploadBatchSize = -1)
         {
             if (schema == null)
                 throw new ArgumentNullException("schema");
@@ -180,6 +183,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             this.scopeName = scopeName;
             // set cookiecontainer
             this.cookieContainer = cookieContainer;
+            this.uploadBatchSize = uploadBatchSize;
             this.databaseName = databasePath;
 
             bool isPath = databasePath.Contains('/') || databasePath.Contains('\\');
@@ -305,12 +309,16 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                  // Get the last date where Sync Occured
                  var lastSyncDate = Configuration.LastSyncDate;
 
+                 // get the number of changes
+                 bool uploadBatchingEnabled = this.uploadBatchSize > 0;
+                 var localChangeCount = uploadBatchingEnabled ? Manager.GetChangeCount(state, lastSyncDate) : 0;
+
                  // Get the changes from the storage layer (not the in-memory data that can change)
-                 IEnumerable<IOfflineEntity> changes = Manager.GetChanges(state, lastSyncDate);
+                 var changes = Manager.GetChanges(state, lastSyncDate, this.uploadBatchSize).ToList();
 
                  // Fill the change list.
-                 changeSet.Data = changes.ToList();
-                 changeSet.IsLastBatch = true;
+                 changeSet.Data = changes;
+                 changeSet.IsLastBatch = (localChangeCount - changes.Count <= 0);
                  changeSet.ServerBlob = this.Configuration.AnchorBlob;
 
                  return changeSet;
