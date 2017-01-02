@@ -36,7 +36,7 @@
     </metadata>
     <files>
         <file src="..\..\C#\SyncClient.Android\bin\Debug\Microsoft.Synchronization.ClientServices.Android.dll" target="lib\MonoAndroid\Microsoft.Synchronization.ClientServices.Android.dll" />
-        <file src="..\..\C#\SyncClient.iOS\bin\iPhone\Debug\Microsoft.Synchronization.ClientServices.iOS.dll" target="lib\MonoTouch\Microsoft.Synchronization.ClientServices.iOS.dll" />
+        <file src="..\..\C#\SyncClient.iOS\bin\iPhone\Debug\Microsoft.Synchronization.ClientServices.iOS.dll" target="lib\Xamarin.iOS\Microsoft.Synchronization.ClientServices.iOS.dll" />
         <file src="..\..\C#\SyncClient.Net\bin\Debug\Microsoft.Synchronization.ClientServices.Net.dll" target="lib\net45\Microsoft.Synchronization.ClientServices.Net.dll" />
         <file src="..\..\C#\SyncClient.Universal\bin\Debug\Microsoft.Synchronization.ClientServices.WinRT.dll" target="lib\portable-windows8+net45\Microsoft.Synchronization.ClientServices.WinRT.dll" />
         <file src="..\..\C#\WP8Client\bin\x86\Debug\Microsoft.Synchronization.ClientServices.WP8.dll" target="lib\wp8\Microsoft.Synchronization.ClientServices.WP8.dll" />
