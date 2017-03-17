@@ -14,7 +14,7 @@ using Windows.Storage;
 using SQLitePCL;
 using System.IO;
 using System.Globalization;
-
+using SQLitePCL.pretty;
 
 
 namespace Microsoft.Synchronization.ClientServices.SQLite
@@ -34,7 +34,8 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         /// </summary>
         internal void CreateTable(Type ty)
         {
-            using (SQLiteConnection connection = new SQLiteConnection(localFilePath))
+            
+            using (SQLiteDatabaseConnection connection = SQLitePCL.pretty.SQLite3.Open(localFilePath))
             {
                 try
                 {
@@ -78,15 +79,9 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                     query = String.Format(query, map.TableName, decl, pKeyDecl);
                     queryTracking = String.Format(queryTracking, map.TableName, declTracking, pKeyDecl);
 
-                    using (var statement = connection.Prepare(query))
-                    {
-                        statement.Step();
-                    }
-                    using (var statement = connection.Prepare(queryTracking))
-                    {
-                        statement.Step();
-                    }
-
+                    connection.Execute(query);
+                    connection.Execute(queryTracking);
+                    
                     var indexes = new Dictionary<string, IndexInfo>();
                     foreach (var c in map.Columns)
                     {
@@ -127,10 +122,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                         var sql = String.Format(sqlFormat, indexName, index.TableName, columns,
                                                 index.Unique ? "unique" : "");
 
-                        using (var statement = connection.Prepare(sql))
-                        {
-                            statement.Step();
-                        }
+                        connection.Execute(sql);
                     }
 
                     // Create Triggers
@@ -146,27 +138,17 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             }
         }
 
-        private void DisableTriggers(TableMapping map, SQLiteConnection connection)
+        private void DisableTriggers(TableMapping map, IDatabaseConnection connection)
         {
             try
             {
-
                 String triggerDeleteQuery = String.Format(SQLiteConstants.DeleteTriggerAfterDelete, map.TableName);
                 String triggerInsertQuery = String.Format(SQLiteConstants.DeleteTriggerAfterInsert, map.TableName);
                 String triggerUpdateQuery = String.Format(SQLiteConstants.DeleteTriggerAfterUpdate, map.TableName);
 
-                using (var statement = connection.Prepare(triggerDeleteQuery))
-                {
-                    statement.Step();
-                }
-                using (var statement = connection.Prepare(triggerInsertQuery))
-                {
-                    statement.Step();
-                }
-                using (var statement = connection.Prepare(triggerInsertQuery))
-                {
-                    statement.Step();
-                }
+                connection.Execute(triggerDeleteQuery);
+                connection.Execute(triggerInsertQuery);
+                connection.Execute(triggerUpdateQuery);
 
                 //await connection.ExecuteStatementAsync(triggerDeleteQuery).AsTask().ConfigureAwait(false);
                 //await connection.ExecuteStatementAsync(triggerInsertQuery).AsTask().ConfigureAwait(false);
@@ -182,7 +164,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
 
         }
 
-        private void CreateTriggers(Type ty, SQLiteConnection connection)
+        private void CreateTriggers(Type ty, IDatabaseConnection connection)
         {
             try
             {
@@ -205,31 +187,20 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                 String triggerInsertQuery =
                     String.Format(SQLiteConstants.CreateTriggerAfterInsert,
                                   map.TableName, pkeysNames, pkeysNewNames);
-
-                using (var statement = connection.Prepare(triggerInsertQuery))
-                {
-                    statement.Step();
-                }
+                connection.Execute(triggerInsertQuery);
 
 
                 String triggerUpdateQuery =
                     String.Format(SQLiteConstants.CreateTriggerAfterUpdate,
                                   map.TableName, updateOrWherePkeysName);
 
+                connection.Execute(triggerUpdateQuery);
 
-                using (var statement = connection.Prepare(triggerUpdateQuery))
-                {
-                    statement.Step();
-                }
                 String triggerDeleteQuery =
                     String.Format(SQLiteConstants.CreateTriggerAfterDelete,
                                   map.TableName, updateOrWherePkeysName);
 
-                using (var statement = connection.Prepare(triggerDeleteQuery))
-                {
-                    statement.Step();
-                }
-
+                connection.Execute(triggerDeleteQuery);
             }
             catch (Exception ex)
             {
@@ -245,7 +216,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         /// </summary>
         internal void DeleteTombstoneTrackingEntities(Type ty, List<SQLiteOfflineEntity> entities)
         {
-            using (SQLiteConnection connection = new SQLiteConnection(this.localFilePath))
+            using (SQLiteDatabaseConnection connection = SQLitePCL.pretty.SQLite3.Open(this.localFilePath))
             {
                 // Get mapping from my type
                 var map = manager.GetMapping(ty);
@@ -256,43 +227,21 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                 var queryDeleteTracking = String.Format(SQLiteConstants.DeleteTrackingFromChanges,
                     map.TableName, updateOrWherePkeysName);
 
-                try
+                connection.RunInTransaction((conn) =>
                 {
-                    using (var statement = connection.Prepare("Begin Transaction"))
+                    try
                     {
-                        statement.Step();
-                    }
-
-                    foreach (var entity in entities)
-                    {
-                        using (var stmtDeleteItemTracking = connection.Prepare(queryDeleteTracking))
+                        foreach (var entity in entities)
                         {
-                            // We have Primary Key, so we can delete item form table and table_tracking
-                            // Bind parameters
-                            BindParameter(stmtDeleteItemTracking, 1, entity.ServiceMetadata.Id);
-
-                            stmtDeleteItemTracking.Step();
-                            stmtDeleteItemTracking.Reset();
-                            stmtDeleteItemTracking.ClearBindings();
+                            conn.Execute(queryDeleteTracking, entity.ServiceMetadata.Id);
                         }
                     }
-                    using (var statement = connection.Prepare("Commit Transaction"))
+                    catch (Exception ex)
                     {
-                        statement.Step();
+                        Debug.WriteLine(ex.Message);
+                        throw;
                     }
-
-                }
-                catch (Exception ex)
-                {
-                    using (var statement = connection.Prepare("Rollback Transaction"))
-                    {
-                        statement.Step();
-                    }
-                    Debug.WriteLine(ex.Message);
-                    throw;
-                }
-
-
+                });
             }
         }
 
@@ -301,62 +250,42 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         /// </summary>
         internal void UpdateDirtyTrackingEntities(Type ty, List<SQLiteOfflineEntity> entities)
         {
-            using (SQLiteConnection connection = new SQLiteConnection(localFilePath))
+            using (SQLiteDatabaseConnection connection = SQLitePCL.pretty.SQLite3.Open(localFilePath))
             {
                 // Get mapping from my type
                 var map = manager.GetMapping(ty);
                 var queryUpdateDirtyTracking = String.Format(SQLiteConstants.UpdateDirtyTracking, map.TableName);
 
-                try
+                connection.RunInTransaction((conn) =>
                 {
-                    using (var statement = connection.Prepare("Begin Transaction"))
-                    {
-                        statement.Step();
-                    }
-
-                    using (var stmtTracking = connection.Prepare(queryUpdateDirtyTracking))
+                    try
                     {
                         foreach (var entity in entities)
                         {
 
                             // Set Values for tracking table
-                            BindParameter(stmtTracking, 1, entity.ServiceMetadata.IsTombstone);
-                            BindParameter(stmtTracking, 2, 0);
-                            BindParameter(stmtTracking, 3, entity.ServiceMetadata.ETag);
+                            var parameters = new object[5];
+                            parameters[0] = entity.ServiceMetadata.IsTombstone;
+                            parameters[1] = 0;
+                            parameters[2] = entity.ServiceMetadata.ETag;
+
 
                             var editUri = String.Empty;
                             if (entity.ServiceMetadata.EditUri != null && entity.ServiceMetadata.EditUri.IsAbsoluteUri)
                                 editUri = entity.ServiceMetadata.EditUri.AbsoluteUri;
 
-                            BindParameter(stmtTracking, 4, editUri);
-                            BindParameter(stmtTracking, 5, entity.ServiceMetadata.Id);
+                            parameters[3] = editUri;
+                            parameters[4] = entity.ServiceMetadata.Id;
 
-                            //await stmtTracking.StepAsync().AsTask().ConfigureAwait(false);
-                            stmtTracking.Step();
-
-                            stmtTracking.Reset();
-                            stmtTracking.ClearBindings();
+                            conn.Execute(queryUpdateDirtyTracking, parameters);
                         }
-
                     }
-                    using (var statement = connection.Prepare("Commit Transaction"))
+                    catch (Exception ex)
                     {
-                        statement.Step();
+                        Debug.WriteLine(ex.Message);
+                        throw;
                     }
-
-
-
-                }
-                catch (Exception ex)
-                {
-                    using (var statement = connection.Prepare("Rollback Transaction"))
-                    {
-                        statement.Step();
-                    }
-
-                    Debug.WriteLine(ex.Message);
-                    throw;
-                }
+                });
             }
         }
 
@@ -366,7 +295,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         internal void MergeEntities(Type ty, List<SQLiteOfflineEntity> entities)
         {
 
-            using (SQLiteConnection connection = new SQLiteConnection(this.localFilePath))
+            using (SQLiteDatabaseConnection connection = SQLitePCL.pretty.SQLite3.Open(this.localFilePath))
             {
 
                 // Get mapping from my type
@@ -412,66 +341,36 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                                   pkeysNames);
 
 
-
-                try
+                connection.RunInTransaction((conn) =>
                 {
-                    using (var statement = connection.Prepare("Begin Transaction"))
+                    try
                     {
-                        statement.Step();
-                    }
+                        // Disable Trigger
+                        this.DisableTriggers(map, conn);
 
-                    // Disable Trigger
-                    this.DisableTriggers(map, connection);
-
-                    // Prepare commandsa
-                    using (var stmtInsert = connection.Prepare(queryInsert))
-                    using (var stmtUpdate = connection.Prepare(queryUpdate))
-                    using (var stmtGetprimaryKey = connection.Prepare(querySelectItemPrimaryKeyFromTrackingChangesWithOemID))
-                    using (var stmtDeleteItem = connection.Prepare(queryDelete))
-                    using (var stmtDeleteItemTracking = connection.Prepare(queryDeleteTracking))
-                    using (var stmtTracking = connection.Prepare(queryUpdateTracking))
-                    {
                         foreach (var entity in entities)
                         {
                             // Foreach entity check if it's a delete action or un insert/update action
                             if (entity.ServiceMetadata.IsTombstone)
                             {
-                                // Delete Action
-
-                                // Bind parameter
-                                BindParameter(stmtGetprimaryKey, 1, entity.ServiceMetadata.Id);
 
                                 // Store values of primaryKeys
                                 Object[] pkeys = new object[map.PrimaryKeys.Length];
 
                                 // While row is available (only 1 if it's good)
-                                while (stmtGetprimaryKey.Step() == SQLiteResult.ROW)
+                                foreach(var pkRow in conn.Query(querySelectItemPrimaryKeyFromTrackingChangesWithOemID, entity.ServiceMetadata.Id))
                                 {
                                     for (int i = 0; i < pkeys.Length; i++)
                                     {
                                         // Read the column
-                                        pkeys[i] = ReadCol(stmtGetprimaryKey, i, map.PrimaryKeys[i].ColumnType);
+                                        pkeys[i] = ReadCol(pkRow, i, map.PrimaryKeys[i].ColumnType);
                                     }
 
                                 }
-                                stmtGetprimaryKey.Reset();
 
-                                // Bind parameters
-                                for (int i = 0; i < pkeys.Length; i++)
-                                {
-                                    BindParameter(stmtDeleteItem, i + 1, pkeys[i]);
-                                    BindParameter(stmtDeleteItemTracking, i + 1, pkeys[i]);
-                                }
-
-                                // Execute the deletion of 2 rows
-                                stmtDeleteItem.Step();
-                                stmtDeleteItem.Reset();
-                                stmtDeleteItem.ClearBindings();
-
-                                stmtDeleteItemTracking.Step();
-                                stmtDeleteItemTracking.Reset();
-                                stmtDeleteItemTracking.ClearBindings();
-
+                                // delete
+                                conn.Execute(queryDelete, pkeys);
+                                conn.Execute(queryDeleteTracking, pkeys);
                             }
                             else
                             {
@@ -479,78 +378,64 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                                 var cols = map.Columns;
 
                                 // Set values for table
+                                var insertParameters = new List<object>();
+                                var updateParameters = new List<object>();
                                 for (var i = 0; i < cols.Length; i++)
                                 {
                                     var val = cols[i].GetValue(entity);
-                                    BindParameter(stmtInsert, i + 1, val);
-                                    BindParameter(stmtUpdate, i + 1, val);
+                                    //BindParameter(stmtInsert, i + 1, val);
+                                    //BindParameter(stmtUpdate, i + 1, val);
+                                    insertParameters.Add(val);
+                                    updateParameters.Add(val);
                                 }
                                 // add where clause
                                 for (var i = 0; i < map.PrimaryKeys.Length; i++)
                                 {
                                     var val = map.PrimaryKeys[i].GetValue(entity);
-                                    BindParameter(stmtUpdate, cols.Length + i + 1,val);
+                                    //BindParameter(stmtUpdate, cols.Length + i + 1, val);
+                                    updateParameters.Add(val);
                                 }
-                                stmtUpdate.Step();
-                                stmtUpdate.Reset();
-                                stmtUpdate.ClearBindings();
+                                conn.Execute(queryUpdate, updateParameters.ToArray());
+                                conn.Execute(queryInsert, insertParameters.ToArray());
 
-                                stmtInsert.Step();
-                                stmtInsert.Reset();
-                                stmtInsert.ClearBindings();
 
                                 // Set Values for tracking table
-                                BindParameter(stmtTracking, 1, entity.ServiceMetadata.IsTombstone);
-                                BindParameter(stmtTracking, 2, 0);
-                                BindParameter(stmtTracking, 3, entity.ServiceMetadata.Id);
-                                BindParameter(stmtTracking, 4, "ETag");
+                                var trackingParameters = new List<object>();
+                                trackingParameters.Add(entity.ServiceMetadata.IsTombstone);
+                                trackingParameters.Add(0);
+                                trackingParameters.Add(entity.ServiceMetadata.Id);
+                                trackingParameters.Add("ETag");
 
                                 var editUri = String.Empty;
                                 if (entity.ServiceMetadata.EditUri != null &&
                                     entity.ServiceMetadata.EditUri.IsAbsoluteUri)
                                     editUri = entity.ServiceMetadata.EditUri.AbsoluteUri;
 
-                                BindParameter(stmtTracking, 5, editUri);
-                                BindParameter(stmtTracking, 6, DateTime.UtcNow);
+                                trackingParameters.Add(editUri);
+                                trackingParameters.Add(DateTime.UtcNow);
 
                                 // Set values for tracking table
                                 for (var i = 0; i < map.PrimaryKeys.Length; i++)
                                 {
                                     var val = map.PrimaryKeys[i].GetValue(entity);
-                                    BindParameter(stmtTracking, i + 7, val);
+                                    trackingParameters.Add(val);
                                 }
 
-                                stmtTracking.Step();
-                                stmtTracking.Reset();
-                                stmtTracking.ClearBindings();
-
+                                conn.Execute(queryUpdateTracking, trackingParameters.ToArray());
                             }
 
                         }
-
-
-                        using (var statement = connection.Prepare("Commit Transaction"))
-                        {
-                            statement.Step();
-                        }
                     }
-
-
-                }
-                catch (Exception ex)
-                {
-                    using (var statement = connection.Prepare("Rollback Transaction"))
+                    catch (Exception ex)
                     {
-                        statement.Step();
+                        Debug.WriteLine(ex.Message);
+                        throw;
                     }
-                    Debug.WriteLine(ex.Message);
-                    throw;
-                }
 
-                // Re create Triggers
-                this.CreateTriggers(ty, connection);
+                    // Re create Triggers
+                    this.CreateTriggers(ty, conn);
+                });
             }
-
         }
 
         /// <summary>
@@ -562,7 +447,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         {
             long totalCount = 0;
 
-            using (SQLiteConnection connection = new SQLiteConnection(localFilePath))
+            using (SQLiteDatabaseConnection connection = SQLitePCL.pretty.SQLite3.Open(localFilePath))
             {
                 try
                 {
@@ -576,29 +461,11 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
 
                         querySelect = String.Format(querySelect, map.TableName);
 
+                        var count = connection.Query(querySelect).First()[0].ToInt();
 
-                        // Prepare command
-                        using (var stmt = connection.Prepare(querySelect))
-                        {
-                            try
-                            {
-                                // Set Values
-                                BindParameter(stmt, 1, lastModifiedDate);
+                        Debug.WriteLine($"Table {map.TableName} has {count} changes");
 
-                                stmt.Step();
-
-                                var count = stmt.GetInteger(0);
-
-                                Debug.WriteLine($"Table {map.TableName} has {count} changes");
-
-                                totalCount += count;
-                            }
-                            finally
-                            {
-                                stmt.Reset();
-                                stmt.ClearBindings();
-                            }
-                        }
+                        totalCount += count;
                     }
                 }
                 catch (Exception ex)
@@ -622,7 +489,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         {
             List<SQLiteOfflineEntity> lstChanges = new List<SQLiteOfflineEntity>();
 
-            using (SQLiteConnection connection = new SQLiteConnection(localFilePath))
+            using (SQLiteDatabaseConnection connection = SQLitePCL.pretty.SQLite3.Open(localFilePath))
             {
                 try
                 {
@@ -660,70 +527,63 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                         // add limit if specified
                         if (uploadBatchSize > 0)
                             querySelect += $" LIMIT {uploadBatchSize}";
-
-                        // Prepare command
-                        using (var stmt = connection.Prepare(querySelect))
+                        
+                        try
                         {
-                            try
+                            // Get mapping form the statement
+                            var cols = new TableMapping.Column[map.Columns.Length];
+                            bool firstRow = true;
+
+                            // While row is available
+                            foreach(var row in connection.Query(querySelect, lastModifiedDate))
                             {
-                                // Set Values
-                                BindParameter(stmt, 1, lastModifiedDate);
-
-                                // Get mapping form the statement
-                                var cols = new TableMapping.Column[map.Columns.Length];
-
-                                // Foreach column, get the property in my object
-                                for (int i = 0; i < cols.Length; i++)
+                                if (firstRow)
                                 {
-                                    var name = stmt.ColumnName(i);
-                                    var c = map.FindColumn(name);
-                                    if (c != null)
-                                        cols[i] = map.FindColumn(name);
-                                }
-
-                                // While row is available
-                                //while (await stmt.StepAsync().AsTask().ConfigureAwait(false))
-                                while (stmt.Step() == SQLiteResult.ROW)
-                                {
-                                    // Create the object
-                                    SQLiteOfflineEntity obj = (SQLiteOfflineEntity)Activator.CreateInstance(map.MappedType);
-
+                                    // Foreach column, get the property in my object
                                     for (int i = 0; i < cols.Length; i++)
                                     {
-                                        if (cols[i] == null)
-                                            continue;
-
-                                        // Read the column
-                                        var val = ReadCol(stmt, i, cols[i].ColumnType);
-
-                                        // Set the value
-                                        cols[i].SetValue(obj, val);
+                                        var name = row[i].ColumnInfo.Name;
+                                        var c = map.FindColumn(name);
+                                        if (c != null)
+                                            cols[i] = map.FindColumn(name);
                                     }
 
-                                    // Read the Oem Properties
-                                    var newIndex = map.Columns.Count();
-
-                                    obj.ServiceMetadata = new OfflineEntityMetadata();
-
-                                    obj.ServiceMetadata.IsTombstone = (Boolean)ReadCol(stmt, newIndex, typeof(Boolean));
-                                    obj.ServiceMetadata.Id = (String)ReadCol(stmt, newIndex + 1, typeof(String));
-                                    obj.ServiceMetadata.ETag = (String)ReadCol(stmt, newIndex + 2, typeof(String));
-                                    String absoluteUri = (String)ReadCol(stmt, newIndex + 3, typeof(String));
-                                    obj.ServiceMetadata.EditUri = String.IsNullOrEmpty(absoluteUri) ? null : new Uri(absoluteUri);
-
-                                    lstChanges.Add(obj);
+                                    firstRow = false;
                                 }
+
+                                // Create the object
+                                SQLiteOfflineEntity obj = (SQLiteOfflineEntity)Activator.CreateInstance(map.MappedType);
+
+                                for (int i = 0; i < cols.Length; i++)
+                                {
+                                    if (cols[i] == null)
+                                        continue;
+
+                                    // Read the column
+                                    var val = ReadCol(row, i, cols[i].ColumnType);
+
+                                    // Set the value
+                                    cols[i].SetValue(obj, val);
+                                }
+
+                                // Read the Oem Properties
+                                var newIndex = map.Columns.Count();
+
+                                obj.ServiceMetadata = new OfflineEntityMetadata();
+
+                                obj.ServiceMetadata.IsTombstone = row[newIndex].ToBool(); //ReadCol(stmt, newIndex, typeof(Boolean));
+                                obj.ServiceMetadata.Id = row[newIndex + 1].ToString(); //(String)ReadCol(stmt, newIndex + 1, typeof(String));
+                                obj.ServiceMetadata.ETag = row[newIndex + 2].ToString(); //(String)ReadCol(stmt, newIndex + 2, typeof(String));
+                                String absoluteUri = row[newIndex + 3].ToString(); //(String)ReadCol(stmt, newIndex + 3, typeof(String));
+                                obj.ServiceMetadata.EditUri = String.IsNullOrEmpty(absoluteUri) ? null : new Uri(absoluteUri);
+
+                                lstChanges.Add(obj);
                             }
-                            catch (Exception ex)
-                            {
-                                Debug.WriteLine(ex.Message);
-                                throw;
-                            }
-                            finally
-                            {
-                                stmt.Reset();
-                                stmt.ClearBindings();
-                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                            throw;
                         }
 
                         // if we are batching uploads and the upload rowcount has been reached, skip
@@ -746,6 +606,51 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             return lstChanges;
         }
 
+        public static object ReadCol(IReadOnlyList<IResultSetValue> stmt, int index, Type clrType)
+        {
+            var result = stmt[index];
+            if (result == null)
+                return null;
+
+            if (clrType == typeof(String))
+                return result.ToString(); //result as string;
+            if (clrType == typeof(Int32))
+                return result.ToInt(); //Convert.ToInt32(result, CultureInfo.InvariantCulture);
+            if (clrType == typeof(Boolean))
+                return result.ToBool(); //(Int64)result == 1;
+            if (clrType == typeof(Double))
+                return result.ToDouble(); //Convert.ToDouble(result, CultureInfo.InvariantCulture);
+            if (clrType == typeof(Single))
+                return result.ToFloat(); //Convert.ToSingle(result, CultureInfo.InvariantCulture);
+            if (clrType == typeof(DateTime))
+                return DateTime.Parse(result.ToString(), CultureInfo.InvariantCulture);
+            if (clrType == typeof(DateTimeOffset))
+                return DateTime.Parse(result.ToString(), CultureInfo.InvariantCulture);
+            if (clrType == typeof(TimeSpan))
+                return TimeSpan.FromTicks(result.ToInt64());
+            if (clrType.GetTypeInfo().IsEnum)
+                return result.ToInt(); //Convert.ToInt32(result, CultureInfo.InvariantCulture);
+            if (clrType == typeof(Int64))
+                return result.ToInt64(); //(Int64)result;
+            if (clrType == typeof(UInt32))
+                return result.ToUInt32(); //Convert.ToUInt32(result, CultureInfo.InvariantCulture);
+            if (clrType == typeof(Decimal))
+                return result.ToDecimal(); //Convert.ToDecimal(result, CultureInfo.InvariantCulture);
+            if (clrType == typeof(Byte))
+                return result.ToByte(); //Convert.ToByte(result, CultureInfo.InvariantCulture);
+            if (clrType == typeof(UInt16))
+                return result.ToUInt16(); //Convert.ToUInt16(result, CultureInfo.InvariantCulture);
+            if (clrType == typeof(Int16))
+                return result.ToInt(); //Convert.ToInt16(result, CultureInfo.InvariantCulture);
+            if (clrType == typeof(sbyte))
+                return result.ToSByte(); //Convert.ToSByte(result, CultureInfo.InvariantCulture);
+            if (clrType == typeof(byte[]))
+                return result.ToBlob(); //[])result;
+            if (clrType == typeof(Guid))
+                return new Guid(result.ToString());
+
+            throw new NotSupportedException("Don't know how to read " + clrType);
+        }
 
         private static IEnumerable<string> GetOfflineEntityMetadataSQlDecl()
         {
@@ -762,123 +667,6 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             return columnsDcl;
         }
 
-        public static object ReadCol(ISQLiteStatement stmt, int index, Type clrType)
-        {
-            var result = stmt[index];
-            if (result == null)
-                return null;
-
-            if (clrType == typeof(String))
-                return result as string;
-            if (clrType == typeof(Int32))
-                return Convert.ToInt32(result, CultureInfo.InvariantCulture);
-            if (clrType == typeof(Boolean))
-                return (Int64)result == 1;
-            if (clrType == typeof(Double))
-                return Convert.ToDouble(result, CultureInfo.InvariantCulture);
-            if (clrType == typeof(Single))
-                return Convert.ToSingle(result, CultureInfo.InvariantCulture);
-            if (clrType == typeof(DateTime))
-                return DateTime.Parse((string)result, CultureInfo.InvariantCulture);
-            if (clrType == typeof(DateTimeOffset))
-                return DateTime.Parse((string)result, CultureInfo.InvariantCulture);
-            if (clrType == typeof(TimeSpan))
-                return TimeSpan.FromTicks((Int64)result);
-            if (clrType.GetTypeInfo().IsEnum)
-                return Convert.ToInt32(result, CultureInfo.InvariantCulture);
-            if (clrType == typeof(Int64))
-                return (Int64)result;
-            if (clrType == typeof(UInt32))
-                return Convert.ToUInt32(result, CultureInfo.InvariantCulture);
-            if (clrType == typeof(Decimal))
-                return Convert.ToDecimal(result, CultureInfo.InvariantCulture);
-            if (clrType == typeof(Byte))
-                return Convert.ToByte(result, CultureInfo.InvariantCulture);
-            if (clrType == typeof(UInt16))
-                return Convert.ToUInt16(result, CultureInfo.InvariantCulture);
-            if (clrType == typeof(Int16))
-                return Convert.ToInt16(result, CultureInfo.InvariantCulture);
-            if (clrType == typeof(sbyte))
-                return Convert.ToSByte(result, CultureInfo.InvariantCulture);
-            if (clrType == typeof(byte[]))
-                return (byte[])result;
-            if (clrType == typeof(Guid))
-                return new Guid((String)result);
-
-            throw new NotSupportedException("Don't know how to read " + clrType);
-        }
-
-
-        internal static void BindParameter(ISQLiteStatement stmt, int index, object value)
-        {
-            if (value == null)
-            {
-                stmt.Bind(index, null);
-            }
-            else if (value is Int32)
-            {
-                stmt.Bind(index, (int)value);
-            }
-            else if (value is String)
-            {
-                stmt.Bind(index, (string)value);
-            }
-            else if (value is Byte || value is UInt16 || value is SByte || value is Int16)
-            {
-                stmt.Bind(index, Convert.ToInt32(value, CultureInfo.InvariantCulture));
-            }
-            else if (value is Boolean)
-            {
-                stmt.Bind(index, (bool)value ? 1 : 0);
-            }
-            else if (value is UInt32 || value is Int64)
-            {
-                stmt.Bind(index, Convert.ToInt64(value, CultureInfo.InvariantCulture));
-            }
-            else if (value is Single || value is Double || value is Decimal)
-            {
-                stmt.Bind(index, Convert.ToDouble(value, CultureInfo.InvariantCulture));
-            }
-            else if (value is DateTimeOffset)
-            {
-                stmt.Bind(index, ((DateTimeOffset)value).ToString("yyyy-MM-dd HH:mm:ss"));
-            }
-            else if (value is TimeSpan)
-            {
-                stmt.Bind(index, ((TimeSpan)value).Ticks);
-            }
-            else if (value is DateTime)
-            {
-                stmt.Bind(index, ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss"));
-#if !NETFX_CORE
-            }
-            else if (value.GetType().IsEnum)
-            {
-#else
-            }
-            else if (value.GetType().GetTypeInfo().IsEnum)
-            {
-#endif
-                stmt.Bind(index, Convert.ToInt32(value, CultureInfo.InvariantCulture));
-            }
-            else if (value is byte[])
-            {
-                var vByte = (byte[])value;
-                //var iBuffer = vByte.AsBuffer();
-
-                stmt.Bind(index, vByte);
-            }
-            else if (value is Guid)
-            {
-                stmt.Bind(index, ((Guid)value).ToString());
-            }
-            else
-            {
-                throw new NotSupportedException("Cannot store type: " + value.GetType());
-            }
-        }
-
-
         private struct IndexedColumn
         {
             public int Order;
@@ -892,9 +680,5 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             public bool Unique;
             public List<IndexedColumn> Columns;
         }
-
-
-
-
     }
 }

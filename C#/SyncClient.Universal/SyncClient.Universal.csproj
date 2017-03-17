@@ -95,8 +95,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="SQLitePCL">
-      <HintPath>..\..\packages\SQLitePCL.3.8.5.1\lib\portable-net45+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10\SQLitePCL.dll</HintPath>
+    <Reference Include="SQLitePCL.pretty, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SQLitePCL.pretty.1.1.0\lib\portable-net45+netcore45+wpa81+wp8\SQLitePCL.pretty.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SQLitePCLRaw.core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SQLitePCLRaw.core.1.1.2\lib\portable-net45+netcore45+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCLRaw.core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -115,7 +120,7 @@
       <!-- Working directory for each platform -->
       <NugetOutputDir>$(SolutionDir)Nuget\SyncClient.SQLite\</NugetOutputDir>
       <!-- Nuget platform -->
-     <NugetFxPcl>portable-windows8+net45</NugetFxPcl>
+      <NugetFxPcl>portable-windows8+net45</NugetFxPcl>
       <!-- Nuget local repository -->
       <NugetRepositoryDir>
         C:\Projects\PERSONAL\Nuget\
@@ -130,17 +135,13 @@
       <NugetInputFiles Include="$(OutDir)\Microsoft.Synchronization.ClientServices.WinRT.dll" />
     </ItemGroup>
     <!-- Copy x86 Files to lib for VS design time -->
-    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'AnyCPU') )" SourceFiles="@(NugetInputFiles)" 
-          ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)lib\$(NugetFxPcl)\%(Filename)%(Extension)')" />
+    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'AnyCPU') )" SourceFiles="@(NugetInputFiles)" ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)lib\$(NugetFxPcl)\%(Filename)%(Extension)')" />
     <!-- Copy Files to Working directories -->
-    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'AnyCPU') )" SourceFiles="@(NugetInputFiles)" 
-          ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)build\$(NugetFxPcl)\%(Filename)%(Extension)')" />
+    <Copy Condition="( ('$(Configuration)'=='Release') AND ('$(Platform)' == 'AnyCPU') )" SourceFiles="@(NugetInputFiles)" ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)build\$(NugetFxPcl)\%(Filename)%(Extension)')" />
     <!-- Create the Package -->
-    <Exec Condition="'$(Configuration)'=='Release'" WorkingDirectory="$(NugetOutputDir)" ContinueOnError="true" 
-          Command="%22$(NugetCommandLine)%22 pack SyncClient.SQLite.nuspec">
+    <Exec Condition="'$(Configuration)'=='Release'" WorkingDirectory="$(NugetOutputDir)" ContinueOnError="true" Command="%22$(NugetCommandLine)%22 pack SyncClient.SQLite.nuspec">
     </Exec>
-    <Copy Condition="'$(Configuration)'=='Release'" SourceFiles="@(NugetPkgFileOutput)" ContinueOnError="true" 
-          DestinationFolder="$(NugetRepositoryDir)" />
+    <Copy Condition="'$(Configuration)'=='Release'" SourceFiles="@(NugetPkgFileOutput)" ContinueOnError="true" DestinationFolder="$(NugetRepositoryDir)" />
     <!--
    
   -->

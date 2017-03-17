@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
     <metadata>
         <id>SyncClient.SQLite</id>
-        <version>3.8.6.6</version>
+        <version>4.0.0.0</version>
         <title>SyncClient SQLite Toolkit</title>
         <authors>Sébastien Pertus</authors>
         <owners>Sébastien Pertus</owners>
@@ -16,10 +16,10 @@
         <tags>SyncFramework WinRT SQLite</tags>
         <dependencies>
             <group targetFramework="WindowsPhone8.0">
-                <dependency id="SQLitePCL" version="3.8.5.1" />
+                <dependency id="SQLitePCL.pretty" version="1.1.0" />
             </group>
             <group targetFramework=".NETPortable0.0-windows8+net45">
-                <dependency id="SQLitePCL" version="3.8.5.1" />
+                <dependency id="SQLitePCL.pretty" version="1.1.0" />
             </group>
         </dependencies>
         <references>
