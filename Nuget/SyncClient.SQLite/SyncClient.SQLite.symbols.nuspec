@@ -32,6 +32,12 @@
             <group targetFramework=".NETPortable0.0-windows8+net45">
                 <reference file="Microsoft.Synchronization.ClientServices.WinRT.dll" />
             </group>
+            <group targetFramework="MonoAndroid4.0.3">
+                <reference file="Microsoft.Synchronization.ClientServices.Android.dll" />
+            </group>
+            <group targetFramework="Xamarin.iOS1.0">
+                <reference file="Microsoft.Synchronization.ClientServices.iOS.dll" />
+            </group>
         </references>
     </metadata>
     <files>
