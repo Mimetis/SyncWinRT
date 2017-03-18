@@ -463,7 +463,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
 
                         querySelect = String.Format(querySelect, map.TableName);
 
-                        var count = connection.Query(querySelect).SelectScalarInt().First();
+                        var count = connection.Query(querySelect, P(lastModifiedDate)).SelectScalarInt().First();
 
                         Debug.WriteLine($"Table {map.TableName} has {count} changes");
 
@@ -580,6 +580,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                                 obj.ServiceMetadata.EditUri = String.IsNullOrEmpty(absoluteUri) ? null : new Uri(absoluteUri);
 
                                 lstChanges.Add(obj);
+
                             }
                         }
                         catch (Exception ex)
@@ -591,6 +592,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                         // if we are batching uploads and the upload rowcount has been reached, skip
                         if (uploadBatchSize > 0 && lstChanges.Count >= uploadBatchSize)
                             break;
+
                     }
                 }
                 catch (Exception ex)
