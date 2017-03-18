@@ -134,14 +134,14 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                     if (scopeTableExist)
                     {
                         String commandSelect = "Select * From ScopeInfoTable Where ScopeName = ?;";
-                        foreach(var row in connection.Query(commandSelect, name))
+                        foreach(var row in connection.Query(commandSelect, SQLiteHelper.P(name)))
                         {
                             scopeInfoTable = new ScopeInfoTable();
-                            scopeInfoTable.ScopeName = row[0].ToString();//(String)SQLiteHelper.ReadCol(stmtSelect, 0, typeof(String));
-                            scopeInfoTable.ServiceUri = row[1].ToString();//(String)SQLiteHelper.ReadCol(stmtSelect, 1, typeof(String));
-                            scopeInfoTable.LastSyncDate = row[2].ToDateTime();//(DateTime)SQLiteHelper.ReadCol(stmtSelect, 2, typeof(DateTime));
-                            scopeInfoTable.AnchorBlob = row[3].ToBlob();// (Byte[])SQLiteHelper.ReadCol(stmtSelect, 3, typeof(Byte[]));
-                            scopeInfoTable.Configuration = row[4].ToString();//(String)SQLiteHelper.ReadCol(stmtSelect, 4, typeof(String));
+                            scopeInfoTable.ScopeName = (String)SQLiteHelper.ReadCol(row, 0, typeof(String));
+                            scopeInfoTable.ServiceUri =  (String)SQLiteHelper.ReadCol(row, 1, typeof(String));
+                            scopeInfoTable.LastSyncDate = (DateTime)SQLiteHelper.ReadCol(row, 2, typeof(DateTime));
+                            scopeInfoTable.AnchorBlob = (Byte[])SQLiteHelper.ReadCol(row, 3, typeof(Byte[]));
+                            scopeInfoTable.Configuration = (String)SQLiteHelper.ReadCol(row, 4, typeof(String));
                         }
                     }
 
@@ -224,13 +224,18 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                     if (scopeTableExist)
                     {
                         String commandSelect = "Select * From ScopeInfoTable Where ScopeName = ?;";
-                        var exist = connection.Query(commandSelect, configuration.ScopeName).Select(r => true).Any();
+                        var exist = connection.Query(commandSelect, SQLiteHelper.P(configuration.ScopeName)).Select(r => true).Any();
 
                         string stmtText = exist
                             ? "Update ScopeInfoTable Set ServiceUri = ?, LastSyncDate = ?, Configuration = ?, AnchorBlob = ? Where ScopeName = ?;"
                             : "Insert into ScopeInfoTable (ServiceUri, LastSyncDate, Configuration, AnchorBlob, ScopeName) Values (?, ?, ?, ?, ?);";
 
-                        connection.Execute(stmtText, scopeInfoTable.ServiceUri, scopeInfoTable.LastSyncDate, scopeInfoTable.Configuration, scopeInfoTable.AnchorBlob, scopeInfoTable.ScopeName);
+                        connection.Execute(stmtText, 
+                            SQLiteHelper.P(scopeInfoTable.ServiceUri),
+                            SQLiteHelper.P(scopeInfoTable.LastSyncDate),
+                            SQLiteHelper.P(scopeInfoTable.Configuration),
+                            SQLiteHelper.P(scopeInfoTable.AnchorBlob),
+                            SQLiteHelper.P(scopeInfoTable.ScopeName));
                     }
                 }
                 catch (Exception ex)

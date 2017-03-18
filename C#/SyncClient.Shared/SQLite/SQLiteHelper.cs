@@ -233,7 +233,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                     {
                         foreach (var entity in entities)
                         {
-                            conn.Execute(queryDeleteTracking, entity.ServiceMetadata.Id);
+                            conn.Execute(queryDeleteTracking, P(entity.ServiceMetadata.Id));
                         }
                     }
                     catch (Exception ex)
@@ -265,17 +265,17 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
 
                             // Set Values for tracking table
                             var parameters = new object[5];
-                            parameters[0] = entity.ServiceMetadata.IsTombstone;
-                            parameters[1] = 0;
-                            parameters[2] = entity.ServiceMetadata.ETag;
+                            parameters[0] = P(entity.ServiceMetadata.IsTombstone);
+                            parameters[1] = P(0);
+                            parameters[2] = P(entity.ServiceMetadata.ETag);
 
 
                             var editUri = String.Empty;
                             if (entity.ServiceMetadata.EditUri != null && entity.ServiceMetadata.EditUri.IsAbsoluteUri)
                                 editUri = entity.ServiceMetadata.EditUri.AbsoluteUri;
 
-                            parameters[3] = editUri;
-                            parameters[4] = entity.ServiceMetadata.Id;
+                            parameters[3] = P(editUri);
+                            parameters[4] = P(entity.ServiceMetadata.Id);
 
                             conn.Execute(queryUpdateDirtyTracking, parameters);
                         }
@@ -358,7 +358,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                                 Object[] pkeys = new object[map.PrimaryKeys.Length];
 
                                 // While row is available (only 1 if it's good)
-                                foreach(var pkRow in conn.Query(querySelectItemPrimaryKeyFromTrackingChangesWithOemID, entity.ServiceMetadata.Id))
+                                foreach(var pkRow in conn.Query(querySelectItemPrimaryKeyFromTrackingChangesWithOemID, P(entity.ServiceMetadata.Id)))
                                 {
                                     for (int i = 0; i < pkeys.Length; i++)
                                     {
@@ -367,6 +367,8 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                                     }
 
                                 }
+                                // convert to valid parameters
+                                pkeys = pkeys.Select(p => P(p)).ToArray();
 
                                 // delete
                                 conn.Execute(queryDelete, pkeys);
@@ -395,8 +397,8 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                                     //BindParameter(stmtUpdate, cols.Length + i + 1, val);
                                     updateParameters.Add(val);
                                 }
-                                conn.Execute(queryUpdate, updateParameters.ToArray());
-                                conn.Execute(queryInsert, insertParameters.ToArray());
+                                conn.Execute(queryUpdate, updateParameters.Select(p => P(p)).ToArray());
+                                conn.Execute(queryInsert, insertParameters.Select(p => P(p)).ToArray());
 
 
                                 // Set Values for tracking table
@@ -421,7 +423,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                                     trackingParameters.Add(val);
                                 }
 
-                                conn.Execute(queryUpdateTracking, trackingParameters.ToArray());
+                                conn.Execute(queryUpdateTracking, trackingParameters.Select(p => P(p)).ToArray());
                             }
 
                         }
@@ -535,7 +537,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                             bool firstRow = true;
 
                             // While row is available
-                            foreach(var row in connection.Query(querySelect, lastModifiedDate))
+                            foreach(var row in connection.Query(querySelect, P(lastModifiedDate)))
                             {
                                 if (firstRow)
                                 {
@@ -571,10 +573,10 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
 
                                 obj.ServiceMetadata = new OfflineEntityMetadata();
 
-                                obj.ServiceMetadata.IsTombstone = row[newIndex].ToBool(); //ReadCol(stmt, newIndex, typeof(Boolean));
-                                obj.ServiceMetadata.Id = row[newIndex + 1].ToString(); //(String)ReadCol(stmt, newIndex + 1, typeof(String));
-                                obj.ServiceMetadata.ETag = row[newIndex + 2].ToString(); //(String)ReadCol(stmt, newIndex + 2, typeof(String));
-                                String absoluteUri = row[newIndex + 3].ToString(); //(String)ReadCol(stmt, newIndex + 3, typeof(String));
+                                obj.ServiceMetadata.IsTombstone = (bool)ReadCol(row, newIndex, typeof(Boolean));
+                                obj.ServiceMetadata.Id = (String)ReadCol(row, newIndex + 1, typeof(String));
+                                obj.ServiceMetadata.ETag = (String)ReadCol(row, newIndex + 2, typeof(String));
+                                String absoluteUri = (String)ReadCol(row, newIndex + 3, typeof(String));
                                 obj.ServiceMetadata.EditUri = String.IsNullOrEmpty(absoluteUri) ? null : new Uri(absoluteUri);
 
                                 lstChanges.Add(obj);
@@ -609,7 +611,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
         public static object ReadCol(IReadOnlyList<IResultSetValue> stmt, int index, Type clrType)
         {
             var result = stmt[index];
-            if (result == null)
+            if (result == null || result.SQLiteType == SQLiteType.Null)
                 return null;
 
             if (clrType == typeof(String))
@@ -650,6 +652,43 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
                 return new Guid(result.ToString());
 
             throw new NotSupportedException("Don't know how to read " + clrType);
+        }
+
+
+        internal static object P(object value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+            else if (value is DateTimeOffset)
+            {
+                return ((DateTimeOffset)value).ToString("yyyy-MM-dd HH:mm:ss");
+            }
+            else if (value is TimeSpan)
+            {
+                return ((TimeSpan)value).Ticks;
+            }
+            else if (value is DateTime)
+            {
+                return ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
+#if !NETFX_CORE
+            }
+            else if (value.GetType().IsEnum)
+            {
+#else
+            }
+            else if (value.GetType().GetTypeInfo().IsEnum)
+            {
+#endif
+                return Convert.ToInt32(value, CultureInfo.InvariantCulture);
+            }
+            else if (value is Guid)
+            {
+                return ((Guid) value).ToString();
+            }
+
+            return value;
         }
 
         private static IEnumerable<string> GetOfflineEntityMetadataSQlDecl()
