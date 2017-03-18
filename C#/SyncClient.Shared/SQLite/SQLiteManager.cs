@@ -76,7 +76,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             {
                 try
                 {
-                    string tableScope = connection.Query(SQLiteConstants.ScopeExist).FirstOrDefault()?.FirstOrDefault()?.ToString();
+                    string tableScope = connection.Query(SQLiteConstants.ScopeExist).Select(r => r[0].ToString()).FirstOrDefault();
                     return tableScope == "ScopeInfoTable";
 
                 }
@@ -127,7 +127,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
 
                     ScopeInfoTable scopeInfoTable = null;
                     // Check if Scope Table Exist
-                    string tableScope = connection.Query(SQLiteConstants.ScopeExist).FirstOrDefault()?.FirstOrDefault()?.ToString();
+                    string tableScope = connection.Query(SQLiteConstants.ScopeExist).Select(r => r[0].ToString()).FirstOrDefault();
 
                     bool scopeTableExist = tableScope == "ScopeInfoTable";
 
@@ -217,13 +217,14 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
             {
                 try
                 {
-                    string tableScope = connection.Query(SQLiteConstants.ScopeExist).FirstOrDefault()?.FirstOrDefault()?.ToString();
+                    string tableScope = connection.Query(SQLiteConstants.ScopeExist).Select(r => r[0].ToString()).FirstOrDefault();
+
                     bool scopeTableExist = tableScope == "ScopeInfoTable";
 
                     if (scopeTableExist)
                     {
                         String commandSelect = "Select * From ScopeInfoTable Where ScopeName = ?;";
-                        var exist = connection.Query(commandSelect, configuration.ScopeName).Any();
+                        var exist = connection.Query(commandSelect, configuration.ScopeName).Select(r => true).Any();
 
                         string stmtText = exist
                             ? "Update ScopeInfoTable Set ServiceUri = ?, LastSyncDate = ?, Configuration = ?, AnchorBlob = ? Where ScopeName = ?;"

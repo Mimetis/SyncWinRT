@@ -461,7 +461,7 @@ namespace Microsoft.Synchronization.ClientServices.SQLite
 
                         querySelect = String.Format(querySelect, map.TableName);
 
-                        var count = connection.Query(querySelect).First()[0].ToInt();
+                        var count = connection.Query(querySelect).SelectScalarInt().First();
 
                         Debug.WriteLine($"Table {map.TableName} has {count} changes");
 
