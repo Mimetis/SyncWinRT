@@ -51,5 +51,6 @@
         <file src="tools\SyncSvcUtil.exe" target="tools\SyncSvcUtil.exe" />
         <file src="tools\SyncSvcUtilUI.exe" target="tools\SyncSvcUtilUI.exe" />
         <file src="tools\SyncSvcUtilUI.exe.config" target="tools\SyncSvcUtilUI.exe.config" />
+        <file src="Content\readme.txt" target="content\readme.txt" />
     </files>
 </package>
