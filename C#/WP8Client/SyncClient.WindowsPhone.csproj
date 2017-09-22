@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\SQLitePCL.3.8.5.1\build\wp8\SQLitePCL.props" Condition="Exists('..\..\packages\SQLitePCL.3.8.5.1\build\wp8\SQLitePCL.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -19,7 +18,8 @@
     <ValidateXaml>true</ValidateXaml>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
-    <NuGetPackageImportStamp>57d76a6d</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -88,13 +88,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="SQLitePCL, Version=3.8.5.0, Culture=neutral, PublicKeyToken=bddade01e9c850c5, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\SQLitePCL.3.8.5.1\lib\wp8\SQLitePCL.dll</HintPath>
+    <Reference Include="SQLitePCL.pretty, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SQLitePCL.pretty.1.1.0\lib\portable-net45+netcore45+wpa81+wp8\SQLitePCL.pretty.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SQLitePCL.Ext.WindowsPhone8.RuntimeProxy, Version=255.255.255.255, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\SQLitePCL.3.8.5.1\lib\wp8\SQLitePCL.Ext.WindowsPhone8.RuntimeProxy.winmd</HintPath>
+    <Reference Include="SQLitePCLRaw.core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SQLitePCLRaw.core.1.1.2\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\SQLitePCLRaw.core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -140,12 +140,4 @@
     <!-- Copy Files to Working directories -->
     <Copy Condition="'$(Configuration)'=='Release'" SourceFiles="@(NugetInputFiles)" ContinueOnError="true" DestinationFiles="@(NugetInputFiles->'$(NugetOutputDir)build\$(NugetFxWP8)\$(Platform)\%(Filename)%(Extension)')" />
   </Target>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\SQLitePCL.3.8.5.1\build\wp8\SQLitePCL.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\SQLitePCL.3.8.5.1\build\wp8\SQLitePCL.props'))" />
-    <Error Condition="!Exists('..\..\packages\SQLitePCL.3.8.5.1\build\wp8\SQLitePCL.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\SQLitePCL.3.8.5.1\build\wp8\SQLitePCL.targets'))" />
-  </Target>
-  <Import Project="..\..\packages\SQLitePCL.3.8.5.1\build\wp8\SQLitePCL.targets" Condition="Exists('..\..\packages\SQLitePCL.3.8.5.1\build\wp8\SQLitePCL.targets')" />
 </Project>

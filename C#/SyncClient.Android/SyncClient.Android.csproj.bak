@@ -15,7 +15,7 @@
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,13 +37,13 @@
   <ItemGroup>
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />
-    <Reference Include="SQLitePCL.pretty, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SQLitePCL.pretty.1.1.0\lib\portable-net45+netcore45+wpa81+wp8\SQLitePCL.pretty.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="SQLitePCL, Version=3.8.5.0, Culture=neutral, PublicKeyToken=bddade01e9c850c5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SQLitePCL.3.8.5.1\lib\MonoAndroid\SQLitePCL.dll</HintPath>
     </Reference>
-    <Reference Include="SQLitePCLRaw.core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1488e028ca7ab535, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SQLitePCLRaw.core.1.1.2\lib\MonoAndroid\SQLitePCLRaw.core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="SQLitePCL.Ext, Version=3.8.5.0, Culture=neutral, PublicKeyToken=bddade01e9c850c5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SQLitePCL.3.8.5.1\lib\MonoAndroid\SQLitePCL.Ext.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
