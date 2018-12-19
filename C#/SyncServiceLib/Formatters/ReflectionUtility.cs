@@ -54,7 +54,8 @@ namespace Microsoft.Synchronization.Services.Formatters
                             (!e.Name.Equals("ServiceMetadata", StringComparison.Ordinal) && 
                             e.GetGetMethod() != null && 
                             e.GetSetMethod() != null && 
-                            e.DeclaringType.Equals(type))).ToArray();
+                            (Attribute.IsDefined(e, typeof(SyncEntityPropertyMappingAttribute)) |
+                            e.DeclaringType.Equals(type)))).ToArray();
 
                         _stringToPropInfoMapping[type.FullName] = props;
 
