@@ -243,7 +243,8 @@ namespace Microsoft.Synchronization.Services
         public void SetDownloadBatchSize(uint batchSizeInKB)
         {
             // Sébastien PERTUS : fix a bug on size ...
-            DownloadBatchSizeInKB = (int?)(batchSizeInKB / 10);
+            // Selvin : it should not be divided 1 KB is 1 KB not 10 KB
+            DownloadBatchSizeInKB = (int?)batchSizeInKB;
         }
 
         /// <summary>
