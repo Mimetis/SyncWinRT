@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
     <metadata>
         <id>SyncClient.SQLite</id>
-        <version>3.8.6.3</version>
+        <version>4.0.0.0</version>
         <title>SyncClient SQLite Toolkit</title>
         <authors>Sébastien Pertus</authors>
         <owners>Sébastien Pertus</owners>
@@ -16,10 +16,10 @@
         <tags>SyncFramework WinRT SQLite</tags>
         <dependencies>
             <group targetFramework="WindowsPhone8.0">
-                <dependency id="SQLitePCL" version="3.8.5.1" />
+                <dependency id="SQLitePCL.pretty" version="1.1.0" />
             </group>
             <group targetFramework=".NETPortable0.0-windows8+net45">
-                <dependency id="SQLitePCL" version="3.8.5.1" />
+                <dependency id="SQLitePCL.pretty" version="1.1.0" />
             </group>
         </dependencies>
         <references>
@@ -32,6 +32,12 @@
             <group targetFramework=".NETPortable0.0-windows8+net45">
                 <reference file="Microsoft.Synchronization.ClientServices.WinRT.dll" />
             </group>
+            <group targetFramework="MonoAndroid4.0.3">
+                <reference file="Microsoft.Synchronization.ClientServices.Android.dll" />
+            </group>
+            <group targetFramework="Xamarin.iOS1.0">
+                <reference file="Microsoft.Synchronization.ClientServices.iOS.dll" />
+            </group>
         </references>
     </metadata>
     <files>
@@ -42,8 +48,24 @@
         <file src="..\..\C#\WP8Client\bin\x86\Debug\Microsoft.Synchronization.ClientServices.WP8.dll" target="lib\wp8\Microsoft.Synchronization.ClientServices.WP8.dll" />
         <file src="..\..\C#\WP8Client\bin\x86\Debug\Microsoft.Synchronization.ClientServices.WP8.dll" target="lib\wp81\Microsoft.Synchronization.ClientServices.WP8.dll" />
         <file src="..\..\C#\SyncClient.Universal\bin\Debug\Microsoft.Synchronization.ClientServices.WinRT.dll" target="lib\wpa81\Microsoft.Synchronization.ClientServices.WinRT.dll" />
+		
+        <file src="..\..\C#\SyncClient.Android\bin\Debug\Microsoft.Synchronization.ClientServices.Android.pdb" target="lib\MonoAndroid\Microsoft.Synchronization.ClientServices.Android.pdb" />
+        <file src="..\..\C#\SyncClient.iOS\bin\iPhone\Debug\Microsoft.Synchronization.ClientServices.iOS.pdb" target="lib\Xamarin.iOS\Microsoft.Synchronization.ClientServices.iOS.pdb" />
+        <file src="..\..\C#\SyncClient.Net\bin\Debug\Microsoft.Synchronization.ClientServices.Net.pdb" target="lib\net45\Microsoft.Synchronization.ClientServices.Net.pdb" />
+        <file src="..\..\C#\SyncClient.Universal\bin\Debug\Microsoft.Synchronization.ClientServices.WinRT.pdb" target="lib\portable-windows8+net45\Microsoft.Synchronization.ClientServices.WinRT.pdb" />
+        <file src="..\..\C#\WP8Client\bin\x86\Debug\Microsoft.Synchronization.ClientServices.WP8.pdb" target="lib\wp8\Microsoft.Synchronization.ClientServices.WP8.pdb" />
+        <file src="..\..\C#\WP8Client\bin\x86\Debug\Microsoft.Synchronization.ClientServices.WP8.pdb" target="lib\wp81\Microsoft.Synchronization.ClientServices.WP8.pdb" />
+        <file src="..\..\C#\SyncClient.Universal\bin\Debug\Microsoft.Synchronization.ClientServices.WinRT.pdb" target="lib\wpa81\Microsoft.Synchronization.ClientServices.WinRT.pdb" />
+		
+		
+		<file src="..\..\C#\SyncClient.Shared\**\*.cs" target="src" />
+		
+		
         <file src="tools\SyncSvcUtil.exe" target="tools\SyncSvcUtil.exe" />
         <file src="tools\SyncSvcUtilUI.exe" target="tools\SyncSvcUtilUI.exe" />
         <file src="tools\SyncSvcUtilUI.exe.config" target="tools\SyncSvcUtilUI.exe.config" />
+		
+        <file src="Content\readme.txt" target="content\readme.txt" />
+		
     </files>
 </package>
